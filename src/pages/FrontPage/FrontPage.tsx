@@ -1,6 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import RecipeCard from '../../components/RecipeCard/RecipeCard';
+import CategoriasPopulares from '../../components/CategoriasPopulares/CategoriasPopulares';
+import RecetasPopulares from '../../components/RecetasPopulares/RecetasPopulares';
+import MensajesInicio from '../../components/MensajeInicio/MensajesInicio';
+import BannerSeccion from '../../components/BannerSeccion/BannerSeccion';
 
 const FrontPage = () => {
   const navigate = useNavigate();
@@ -34,25 +38,12 @@ const FrontPage = () => {
           </nav>
         </div>
       </header>
-      <main className="flex-grow bg-gray-100 py-8">
-        <div className="container mx-auto">
-          <h2 className="text-2xl font-semibold mb-6">Featured Recipes</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <RecipeCard
-              title="Delicious Recipe 1"
-              imageUrl="https://via.placeholder.com/350x200"
-            />
-            <RecipeCard
-              title="Delicious Recipe 2"
-              imageUrl="https://via.placeholder.com/350x200"
-            />
-            <RecipeCard
-              title="Delicious Recipe 3"
-              imageUrl="https://via.placeholder.com/350x200"
-            />
-            {/* Agrega más tarjetas de recetas según sea necesario */}
-          </div>
-        </div>
+      <main className="flex-grow bg-gray-100">
+        <img src="https://via.placeholder.com/720x350" alt="" className="w-full h-96 object-cover" />
+        <MensajesInicio></MensajesInicio>
+        <CategoriasPopulares></CategoriasPopulares>
+        <BannerSeccion></BannerSeccion>
+        <RecetasPopulares></RecetasPopulares>
       </main>
     </div>
   );

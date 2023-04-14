@@ -1,12 +1,15 @@
 import React from 'react';
 import { RecipeCardProps } from '../../interfaces/RecipeCard/RecipeCardProps';
 
-const RecipeCard: React.FC<RecipeCardProps> = ({ title, imageUrl }) => {
+const RecipeCard: React.FC<RecipeCardProps> = ({ title, subtitulo, imageUrl }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-      <img className="w-full h-48 object-cover" src={imageUrl} alt={title} />
-      <div className="p-6">
-        <h3 className="text-xl font-semibold">{title}</h3>
+    <div className="flex-shrink-0 my-4 mx-2">
+      <div className="bg-white hover:shadow-lg transition duration-500 ease-in-out cursor-pointer rounded-lg overflow-hidden w-30">
+        <img className="w-full object-contain" src={imageUrl} alt={title} />
+        <div className="p-6">
+          <h3 className="text-xl font-semibold">{title}</h3>
+          <h4 className="text-l">{subtitulo}</h4>
+        </div>
       </div>
     </div>
   );
