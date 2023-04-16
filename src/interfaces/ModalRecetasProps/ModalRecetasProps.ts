@@ -1,3 +1,5 @@
 export interface ModalRecetasProps {
-    isVisible: boolean
+    isVisible: boolean;
+    onClose: () => void;
+    tituloReceta: string;
 }

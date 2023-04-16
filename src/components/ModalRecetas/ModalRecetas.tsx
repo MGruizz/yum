@@ -1,20 +1,21 @@
 import React from "react";
 import { ModalRecetasProps } from "../../interfaces/ModalRecetasProps/ModalRecetasProps";
 
-const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose }) => {
+const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, tituloReceta }) => {
 
-    if (!isVisible) return null;
+    // receta = query(idReceta)
 
     return (
-        <div className="fixed inset-0 bg-black 
-        bg-opacity-25 backdrop-blur-sm flex
-        justify-center items-center">
-            <div className="w-[600px]">
-                <button className="bg-red-500 text-white 
+        <div>
+            {isVisible &&
+            <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex justify-center items-center">
+                <div className="w-[600px]">
+                    <button className="bg-red-500 text-white 
                 text-xl font-normal rounded-full px-2 
                 float-right" onClick={() => onClose()}>X</button>
-                <div className="bg-white rounded mt-5">Holi</div>
-            </div>
+                    <div className="bg-white rounded mt-5">{tituloReceta}</div>
+                </div>
+            </div>}
         </div>
     )
 }

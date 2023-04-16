@@ -24,6 +24,13 @@ const recetasPopulares = [
 const RecetasPopulares = () => {
 
     const [showModal, setShowModal] = useState(false);
+    const [receta, setReceta] = useState({titulo: ''});
+
+    const handleShowModal = (tituloReceta: string) => {
+        setShowModal(true)
+        setReceta({titulo: tituloReceta});
+    }
+
 
     return (
         <Fragment>
@@ -32,15 +39,15 @@ const RecetasPopulares = () => {
                 <hr className="w-full mt-8 mb-4 border-gray-400"/>
                 <div className='flex flex-wrap gap-4 justify-center px-4'>
                     { recetasPopulares.map((receta) => (
-                        <div className="flex-shrink-0" onClick={() => setShowModal(true)}>
+                        <div className="flex-shrink-0" onClick={() => handleShowModal(receta.titulo) }>
                             <RecipeCard
                                 title={ receta.titulo }
                                 subtitulo={receta.subtitulo}
                                 imageUrl="https://via.placeholder.com/200x270"
                             />
-                            <ModalRecetas isVisible={showModal} />
                         </div>
                     ))}
+                     {showModal && <ModalRecetas tituloReceta={receta.titulo} isVisible={showModal} onClose={() => setShowModal(false)} />}
                 </div>
             </div>
         </Fragment>
