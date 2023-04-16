@@ -4,34 +4,30 @@ import { FaLink } from 'react-icons/fa';
 
 function UserProfile() {
   return (
-    // Aqui va el Componente del navbar
     <div className="min-h-screen bg-gray-200">
-      <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 max-w-screen-md bg-white shadow-lg ">
-        {/* Si es el usuario es el mismo el del perfil que muestre este apartado */}
+      <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 bg-white shadow-lg">
         <div className="flex justify-end">
           <button className="flex justify-end"> <FaPen /></button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 ">
-          <div className="col-span-1 flex justify-center md:justify-start md:ml-10">
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 sm:image-center">
+          <div className="col-span-1 flex justify-center md:justify-start md:ml-10 rounded-full overflow-hidden">
             <img
               src="https://via.placeholder.com/150"
               alt="Profile"
-              className="w-32 h-32 rounded-full object-cover md:w-54 md:h-54"
+              className="w-full h-auto"
             />
           </div>
-          <div className="col-span-1 space-y-4">
-            <h1 className="text-2xl font-bold text-gray-800">Juanito Perez blog</h1>
+          <div className="col-span-2 space-y-4 pt-3 pl-5">
+            <h1 className="text-2xl font-bold text-gray-800 text-left">Juanito Perez blog</h1>
             <p className="text-gray-600 text-left">Soy un cocinero novato que busca mostrar mis recetas al resto del mundo</p>
           </div>
-          
         </div>
-        <div className="flex justify-end"> 
-           <FaLink />
+        <div className="flex justify-end">
+          <FaLink />
         </div>
-        {/* Barra separadora */}
-        <div className="border-b border-gray-300 my-4"/>
-        {/* Aqui van los post's */}
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4">
+        <div className="border-b border-gray-300 my-4" />
+        <h1 className="text-2xl font-bold text-gray-800">Publicaciones</h1>
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center items-center">
           {Array.from({ length: 12 }, (_, index) => (
             <div key={index} className="overflow-hidden rounded-md">
               <img
