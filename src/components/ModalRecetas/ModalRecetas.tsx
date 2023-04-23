@@ -5,23 +5,31 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, tituloR
 
     // receta = query(idReceta)
 
-    const customSize = {
+    const customSizeLg = {
         width: 400,
         height: 600
+    }
+    const customSizeMd = {
+        width: 200,
+        height: 300
+    }
+    const customSizeSm = {
+        width: 250,
+        height: 750
     }
 
     return (
         <div>
             {isVisible &&
             <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center">
-                <div className="w-[1000px]">
+                <div className="lg:w-[100rem] h-[50rem] md:w-[50rem] h-[30rem] sm:w-[250px] h-[750px]">
                     <button className="bg-red-500 text-white 
                     text-xl font-normal rounded-full px-2 
                     float-right" onClick={() => onClose()}>X</button>
                     <div className="bg-white rounded mt-5">
-                        <div className="grid grid-cols-12">
+                        <div className="grid grid-col-12">
                             <div className="col-span-5">
-                                <img className="object-cover overflow-hidden" style={customSize} src="https://via.placeholder.com/200x270" alt="" />
+                                <img className="object-cover overflow-hidden lg:w-[10rem] h-[20rem] md:w-[5rem] h-[10rem] sm:w-[7rem] h-[15rem]" src="https://via.placeholder.com/200x270" alt="" />
                             </div>
                             <div className="col-span-7 px-4 py-3">
                                 <h2 className="text-3xl font-bold text-left mb-3">{tituloReceta}</h2>
