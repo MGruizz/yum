@@ -17,9 +17,9 @@ const MensajesInicio = () => {
     ]
 
     return (
-        <div className="flex flex-wrap justify-center gap-8 px-4">
+        <div className="flex flex-wrap justify-center gap-4 px-4">
             {mensajesInicio.map((mensaje, index) => (
-                <div className="w-full sm:w-1/2 lg:w-1/3" key={index}>
+                <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/3" key={index}>
                     <MensajeInicio
                         imageUrl={mensaje.imageUrl}
                         title={mensaje.title}

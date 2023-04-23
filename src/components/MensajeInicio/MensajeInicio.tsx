@@ -21,7 +21,7 @@ const MensajeInicio: React.FC<MensajeInicioProps> = ({ imageUrl, title, descript
     }
 
     return (
-        <div className="bg-white rounded-lg overflow-hidden text-center my-5">
+        <div className="bg-white rounded-lg overflow-hidden text-center my-5 h-full">
             <FontAwesomeIcon icon={icon} size='2x' className='mt-5'/>
             <h1 className="text-lg font-bold mt-4">{title}</h1>
             <div className="p-4">{description}</div>
