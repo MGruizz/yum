@@ -65,7 +65,9 @@ const Header: React.FC<HeaderProps> = () => {
                             <button className="bg-transparent mr-2">
                                 <AiOutlineBell className="text-xl" />
                             </button>
-                            <button className="bg-transparent">
+                            <button 
+                                className="bg-transparent"
+                                onClick={handleLoginClick}>
                                 <AiOutlineLogout className="text-xl" />
                             </button>
                         </div>
