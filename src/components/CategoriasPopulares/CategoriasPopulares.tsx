@@ -26,8 +26,8 @@ const CategoriasPopulares = () => {
         <div>
             <h1 className="text-4xl font-bold mb-4">Categorías Populares</h1>
             <div className="flex flex-wrap gap-4 justify-center px-4">
-                {categoriasPopulares.map((categoria) => (
-                    <div className="flex-shrink-0">
+                {categoriasPopulares.map((categoria,index) => (
+                    <div className="flex-shrink-0" key={index}>
                         <CategoryCard
                             title={categoria.Titulo}
                             subtitle={categoria.Subtitulo}

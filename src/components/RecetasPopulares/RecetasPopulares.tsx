@@ -38,8 +38,8 @@ const RecetasPopulares = () => {
                 <h2 className="text-4xl font-bold mb-2 mt-4">Recetas Populares</h2>
                 <hr className="w-full mt-8 mb-4 border-gray-400"/>
                 <div className='flex flex-wrap gap-4 justify-center px-4'>
-                    { recetasPopulares.map((receta) => (
-                        <div className="flex-shrink-0" onClick={() => handleShowModal(receta.titulo) }>
+                    { recetasPopulares.map((receta,index) => (
+                        <div className="flex-shrink-0" onClick={() => handleShowModal(receta.titulo) } key={index}>
                             <RecipeCard
                                 title={ receta.titulo }
                                 subtitulo={receta.subtitulo}
