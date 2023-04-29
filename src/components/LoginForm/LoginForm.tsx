@@ -1,19 +1,19 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { LoginValidate } from '../../utils/validators';
+import { loginUser } from '../../api/usersApi';
 
 
 function LoginForm() {
   return (
     
     <Formik
-    initialValues={{ email: '', password: '' }}
-    validationSchema={LoginValidate}
-    onSubmit={(values) => {
-      // Aquí va la lógica de inicio de sesión
-      console.log(values);
+    initialValues={{
+       email: '', password: '' 
     }}
-  >
+    validationSchema={LoginValidate}
+    onSubmit={(values) => loginUser(values)}
+    >
     {({ errors, touched }) => (
       <Form className="space-y-4">
         <div className="space-y-2">
