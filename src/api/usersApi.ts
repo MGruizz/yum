@@ -19,7 +19,6 @@ interface LoginFormValues {
 
 export const loginUser = async (values: LoginFormValues) => {
   try {
-    console.log(values.email)
     const response = await instance.post("/login/", {
       email: values.email,
       password: values.password,
