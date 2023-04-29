@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 import { HeaderProps } from '../../interfaces/Header/HeaderProps';
 import { AiOutlineUser, AiOutlineBell, AiOutlineLogout, AiOutlineSearch, AiOutlineHome } from "react-icons/ai";
 import { useNavigate } from 'react-router-dom';
+import CrearReceta from '../CrearReceta/CrearReceta';
 
 const Header: React.FC<HeaderProps> = () => {
+
+    const [showModal, setShowModal] = useState(false);
 
     const navigate = useNavigate();
 
@@ -19,8 +22,12 @@ const Header: React.FC<HeaderProps> = () => {
         navigate('/profile');
     };
 
-    return (
+    const handleRecipeClick = () => {
+        setShowModal(true);
+    }
 
+    return (
+        <Fragment>
         <header className="bg-white text-black px-8">
 
             <div className="grid grid-cols-1 md:grid-cols-3 items-center">
@@ -51,6 +58,9 @@ const Header: React.FC<HeaderProps> = () => {
                             onClick={handleProfileClick}>
                                 <AiOutlineUser className="text-black text-2xl" />
                             </button>
+                            <a className="hover:cursor-pointer bg-transparent mr-2" onClick={() => handleRecipeClick()}>
+                                Crear receta
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -74,9 +84,10 @@ const Header: React.FC<HeaderProps> = () => {
 
                     </div>
                 </div>
-
+                {showModal && <CrearReceta isVisible={showModal} onClose={() => setShowModal(false)} />}
             </div>
         </header>
+        </Fragment>
     );
 };
 
