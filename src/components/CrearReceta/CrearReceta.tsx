@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { CrearRecetaProps } from "../../interfaces/CrearRecetaProps/CrearRecetaProps";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import createRecipe from '../../api/recipeApi'
 import * as Yup from 'yup';
 
 const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
 
     // receta = query(idReceta)
+    const [formData, setFormData] = useState<any>({});
+
 
     const customSize = {
         width: 400,
@@ -15,9 +18,9 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
     const validationSchema = Yup.object({
         nombreReceta: Yup.string().required('Debe ingresar un nombre a la receta'),
         descripcionReceta: Yup.string().required('Debe ingresar una descripción para la receta'),
-        ingredientesReceta: Yup.string().required('Debe ingresar los ingredientes de la receta'),
-        pasosReceta: Yup.string().required('Debe ingresar los pasos de la receta'),
-        fotoReceta: Yup.mixed().required('Debe cargar una foto de la receta'),
+        ingredientesReceta: Yup.array().min(1, 'Debe ingresar al menos un ingrediente'),
+        pasosReceta: Yup.array().min(1, 'Debe ingresar al menos un paso'),
+        // fotoReceta: Yup.mixed().required('Debe cargar una foto de la receta'),
     });
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
@@ -26,9 +29,16 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
         }
     };
 
-    const handleSubmit = (values: any) => {
-        console.log(values)
-    }
+
+
+    const handleSubmit = (values: any, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
+        // Prevenir la recarga de la página
+
+        // Actualizar el estado con los nuevos datos del formulario
+        setFormData({ values });
+        createRecipe(values);
+        setSubmitting(false);
+    };
 
     return (
         <div>
@@ -45,13 +55,14 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                                 </div>
                                 <div className="col-span-7 px-4 py-3">
                                     <Formik
-                                        initialValues={{ nombreReceta: '', descripcionReceta: '', ingredientesReceta: '', pasosReceta: '', fotoReceta: null }}
+                                        initialValues={{ nombreReceta: '', descripcionReceta: '', ingredientesReceta: [], pasosReceta: [] }}
                                         validationSchema={validationSchema}
                                         validateOnBlur={false}
-                                        onSubmit={(values) => handleSubmit(values)}
+                                        validateOnChange={true}
+                                        onSubmit={(values, actions) => handleSubmit(values, actions)}
                                     >
-                                        {({ setFieldValue }) => (
-                                            <form className="space-y-4">
+                                        {({ values, setFieldValue }) => (
+                                            <Form className="space-y-4">
                                                 <div>
                                                     <label htmlFor="nombreReceta">Nombre:</label>
                                                     <Field
@@ -77,22 +88,32 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                                                 <div>
                                                     <label htmlFor="ingredientesReceta">Ingredientes:</label>
                                                     <Field
-                                                        type="text"
+                                                        as="textarea"
                                                         name="ingredientesReceta"
                                                         id="ingredientesReceta"
                                                         placeholder="Ingresa los ingredientes de la receta"
                                                         className="block"
+                                                        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                                                            const ingredientes = event.target.value.split('\n');
+                                                            setFieldValue('ingredientesReceta', ingredientes);
+                                                        }}
+                                                        value={values.ingredientesReceta.join('\n')}
                                                     />
                                                     <ErrorMessage name="ingredientesReceta" component="div" className="text-red-500 text-sm" />
                                                 </div>
                                                 <div>
                                                     <label htmlFor="pasosReceta">Pasos:</label>
                                                     <Field
-                                                        type="text"
+                                                        as="textarea"
                                                         name="pasosReceta"
                                                         id="pasosReceta"
                                                         placeholder="Ingresa los pasos de la receta"
                                                         className="block"
+                                                        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                                                            const pasos = event.target.value.split('\n');
+                                                            setFieldValue('pasosReceta', pasos);
+                                                        }}
+                                                        value={values.pasosReceta.join('\n')}
                                                     />
                                                     <ErrorMessage name="pasosReceta" component="div" className="text-red-500 text-sm" />
                                                 </div>
@@ -112,7 +133,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                                                         Enviar
                                                     </button>
                                                 </div>
-                                            </form>
+                                            </Form>
                                         )}
                                     </Formik>
                                 </div>
@@ -124,24 +145,6 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
         </div>
     );
 };
-{/*<label htmlFor="">Descripción:</label>
-                                <textarea name="" id="" placeholder="Ingresa la descripción de la receta"></textarea>
-                                <label htmlFor="">Ingredientes:</label>
-                                <input type="text" name="" id="" placeholder="Ingresa el ingrediente n" />
-                                <label htmlFor="">Pasos:</label>
-                                <input type="text" name="" id="" placeholder="Ingresa el paso n" />
-                                <h2 className="text-3xl font-bold text-left mb-3">{tituloReceta}</h2>
-                                <p className="text-lg text-left mb-7">
-                                    Esta es mi receta. <br /> Espero que les guste.
-                                </p>
-                                <p className="text-lg text-left bg-slate-300 rounded-full px-5 mb-2">
-                                    <strong>Paso 1: </strong>Pelar las papas
-                                </p>
-                                <p className="text-lg text-left bg-slate-300 rounded-full px-5 mb-2">
-                                    <strong>Paso 2: </strong>Hervir
-                                </p>
-                                <p className="text-lg text-left bg-slate-300 rounded-full px-5 mb-2">
-                                    <strong>Paso 3: </strong>Comer
-                                </p>*/}
+
 
 export default CrearReceta;
