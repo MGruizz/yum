@@ -1,30 +1,34 @@
 import React from "react";
 import { FaPen } from 'react-icons/fa';
-import { FaLink } from 'react-icons/fa';
+import Header from "../../components/Header/Header";
 
-function UserProfile() {
+const UserProfile: React.FC = () => {
   return (
+    <div>
+      <Header />
     <div className="min-h-screen bg-gray-200">
       <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 bg-white shadow-lg">
         <div className="flex justify-end">
           <button className="flex justify-end"> <FaPen /></button>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 sm:image-center">
-          <div className="col-span-1 flex justify-center md:justify-start md:ml-10 rounded-full overflow-hidden">
+        <div className="grid  sm:grid-cols-2 md:grid-cols-3 sm:image-center  ">
+          <div className="col-span-2 flex justify-center  sm:col-span-1 md:justify-start  xl:justify-center rounded-full overflow-hidden">
             <img
               src="https://via.placeholder.com/150"
               alt="Profile"
-              className="w-full h-auto"
+              className="w-50 sm:w-full lg:w-60 h-auto rounded-full"
             />
           </div>
-          <div className="col-span-2 space-y-4 pt-3 pl-5">
-            <h1 className="text-2xl font-bold text-gray-800 text-left">Juanito Perez blog</h1>
-            <p className="text-gray-600 text-left">Soy un cocinero novato que busca mostrar mis recetas al resto del mundo</p>
+          <div className="col-span-2 space-y-4 pt-3 pl-5 ">
+            <h1 className="text-2xl font-bold text-gray-800 text-left">NombreUsuario</h1>
+            {/* Cuando sea de otro usuario la cuenta que se esta viendo debera tener el boton follow 
+            <div>
+              
+            </div>*/}
+            <p className="text-gray-600 text-left">Descripcion</p>
           </div>
         </div>
-        <div className="flex justify-end">
-          <FaLink />
-        </div>
+
         <div className="border-b border-gray-300 my-4" />
         <h1 className="text-2xl font-bold text-gray-800">Publicaciones</h1>
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center items-center">
@@ -39,6 +43,7 @@ function UserProfile() {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 }
