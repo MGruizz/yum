@@ -13,6 +13,7 @@ function LoginForm() {
     }}
     validationSchema={LoginValidate}
     onSubmit={(values) => loginUser(values)}
+    //onSubmit={(values) => console.log(values)}
     >
     {({ errors, touched }) => (
       <Form className="space-y-4">

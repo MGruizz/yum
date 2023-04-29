@@ -1,18 +1,15 @@
-import instance from './axiosInstance';
-import { AxiosError } from 'axios';
-
+import instance from "./axiosInstance";
 
 export const registerUser = async (email: string, password: string) => {
-    try {
-        const response = await instance.post('/auth/register', {
-            email,
-            password,
-        });
-        return response.data;
-    } catch (error) {
-
-        throw error;
-    }
+  try {
+    const response = await instance.post("/auth/register", {
+      email,
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 interface LoginFormValues {
@@ -20,14 +17,17 @@ interface LoginFormValues {
   password: string;
 }
 
-export const loginUser = async (values : LoginFormValues) => {
+export const loginUser = async (values: LoginFormValues) => {
   try {
-      const response = await instance.post('/login/', {
-          email: values.email,
-          password: values.password,
-      });
-      return response.data;
+    console.log(values.email)
+    const response = await instance.post("/login/", {
+      email: values.email,
+      password: values.password,
+    });
+    console.log(response.data, "Funciona ");
+    return response.data;
   } catch (error) {
-      throw error;
+    console.log("No funciona, osea si funciona ")
+    throw error;
   }
-}
+};
