@@ -14,7 +14,7 @@ function LoginPage() {
         </button>
       </Link>
       
-      <div className="w-full max-w-6xl bg-white shadow-xl rounded-lg md:flex md:gap-x-8 lg:pr-8 relative">
+      <div className="w-full mx-3 lg:mx-0 max-w-6xl bg-white shadow-xl rounded-lg md:flex md:gap-x-8 lg:pr-8 relative">
         
         <div className="hidden md:block w-1/2">
           <img
