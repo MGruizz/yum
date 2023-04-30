@@ -1,8 +1,35 @@
-import React from "react";
+import React ,{ useEffect, useState }from "react";
 import { FaPen } from 'react-icons/fa';
 import Header from "../../components/Header/Header";
+import { number } from "yup";
+import { getUserById,User } from "../../api/usersApi";
 
-const UserProfile: React.FC = () => {
+//Hay que hacer logica de token para que sepa que usuario es el que esta viendo el perfil, si es el original o el de otro usuario
+
+interface UserProfileProps {
+  currentUser: number; // ID del usuario actual
+  profileUser: number; // ID del perfil que se está viendo
+}
+
+const UserProfile: React.FC<UserProfileProps> = ({ currentUser, profileUser }) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await getUserById(1);
+        setUser(userData);
+      } catch (error) {
+        console.error('Error al cargar la información del usuario');
+      }
+    };
+
+    fetchUser();
+  }, [profileUser]);
+
+  // Verifica si el perfil pertenece al usuario actual
+  const isCurrentUserProfile = currentUser === profileUser;
+
   return (
     <div>
       <Header />
@@ -20,7 +47,7 @@ const UserProfile: React.FC = () => {
             />
           </div>
           <div className="col-span-2 space-y-4 pt-3 pl-5 ">
-            <h1 className="text-2xl font-bold text-gray-800 text-left">NombreUsuario</h1>
+            <h1 className="text-2xl font-bold text-gray-800 text-left">{user?.username}</h1>
             {/* Cuando sea de otro usuario la cuenta que se esta viendo debera tener el boton follow 
             <div>
               
