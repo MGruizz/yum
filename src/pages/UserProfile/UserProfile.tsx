@@ -17,7 +17,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ currentUser, profileUser }) =
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userData = await getUserById(1);
+        const userData = await getUserById(profileUser);
         setUser(userData);
       } catch (error) {
         console.error('Error al cargar la información del usuario');
