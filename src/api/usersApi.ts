@@ -1,5 +1,5 @@
 import instance from "./axiosInstance";
-
+import { User , LoginFormValues} from "../features/user/userInterfaces";
 export const registerUser = async (email: string, password: string) => {
   try {
     const response = await instance.post("/auth/register", {
@@ -13,10 +13,7 @@ export const registerUser = async (email: string, password: string) => {
 };
 
 //Mapear a futuro
-interface LoginFormValues {
-  email: string;
-  password: string;
-}
+
 
 export const loginUser = async (values: LoginFormValues) => {
   try {
@@ -33,17 +30,12 @@ export const loginUser = async (values: LoginFormValues) => {
 };
 
 //Mapear a futuro
-export interface User {
-  idUser: number;
-  username:  string;
-  email: string;
-  descripcion: string;
-}
+
 
 
 export const getUserById = async (id: number): Promise<User> => {
   try {
-    const response = await instance.get<User>(`/usuarios/:${id}`);
+    const response = await instance.get<User>(`/usuarios/${id}`);
     return response.data;
   } catch (error) {
     throw new Error('Error al obtener información del usuario');
