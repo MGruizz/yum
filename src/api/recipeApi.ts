@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const createRecipe = async (data: any) => {
+export const createRecipe = async (data: any) => {
     console.log(data)
     try {
         // Hacer la solicitud POST
@@ -14,5 +14,15 @@ const createRecipe = async (data: any) => {
         return null;
     }
 }
+
+export const getPopularRecipes = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/recetas/recetasPopulares/');
+      const popularRecipes = response.data.popularRecipes;
+      return popularRecipes;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
 export default createRecipe;
