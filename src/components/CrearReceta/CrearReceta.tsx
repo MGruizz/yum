@@ -1,43 +1,73 @@
-import React, { useState } from "react";
-import { CrearRecetaProps } from "../../interfaces/CrearRecetaProps/CrearRecetaProps";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import createRecipe from '../../api/recipeApi'
-import * as Yup from 'yup';
+import React, { useState } from 'react';
+import { CrearRecetaProps, FormRecetasInputs } from '../../interfaces/CrearRecetaProps/CrearRecetaProps';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { validationSchema } from '../../utils/validators';
+import createRecipe from '../../api/recipeApi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
 
     // receta = query(idReceta)
-    const [formData, setFormData] = useState<any>({});
+    const [ingredientes, setIngredientes] = useState<string[]>([]);
+    const [pasos, setPasos] = useState<{ numero: number, descripcion: string }[]>([]);
+    const [inputIngrediente, setInputIngrediente] = useState<string>('');
+    const [inputPaso, setInputPaso] = useState<string>('');
+    const [numeroPasos, setNumeroPasos] = useState<number>(1);
 
+    const { register, handleSubmit, control, formState: { errors } } = useForm<FormRecetasInputs>({
+        // @ts-ignore
+        resolver: yupResolver(validationSchema),
+    });
 
     const customSize = {
         width: 400,
-        height: 600
+        height: 720
     }
 
-    const validationSchema = Yup.object({
-        nombreReceta: Yup.string().required('Debe ingresar un nombre a la receta'),
-        descripcionReceta: Yup.string().required('Debe ingresar una descripción para la receta'),
-        ingredientesReceta: Yup.array().min(1, 'Debe ingresar al menos un ingrediente'),
-        pasosReceta: Yup.array().min(1, 'Debe ingresar al menos un paso'),
-        // fotoReceta: Yup.mixed().required('Debe cargar una foto de la receta'),
-    });
-
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
-        if (event.currentTarget.files) {
-            setFieldValue("fotoReceta", event.currentTarget.files[0]);
+    const agregarIngrediente = () => {
+        if (inputIngrediente.trim() !== "") {
+            setIngredientes([...ingredientes, inputIngrediente]);
+            setInputIngrediente("");
         }
     };
 
+    const agregarPaso = () => {
+        if (inputPaso.trim() !== "") {
+            const nuevoPaso = {
+                numero: pasos.length + 1,
+                descripcion: inputPaso,
+            };
+            setPasos([...pasos, nuevoPaso]);
+            setInputPaso("");
+        }
+    };
 
+    const eliminarIngrediente = (index: number) => {
+        setIngredientes((prevIngredientes) =>
+            prevIngredientes.filter((_, i) => i !== index)
+        );
+    };
 
-    const handleSubmit = (values: any, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
-        // Prevenir la recarga de la página
+    const eliminarPaso = (index: number) => {
+        setPasos((prevPasos) => prevPasos.filter((_, i) => i !== index).map((paso, i) => ({ numero: i + 1, descripcion: paso.descripcion })));
+        setNumeroPasos(numeroPasos - 1);
+    };
 
-        // Actualizar el estado con los nuevos datos del formulario
-        setFormData({ values });
-        createRecipe(values);
-        setSubmitting(false);
+    // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
+    //     if (event.currentTarget.files) {
+    //         setFieldValue("fotoReceta", event.currentTarget.files[0]);
+    //     }
+    // };
+
+    const onSubmit: SubmitHandler<FormRecetasInputs> = async (values) => {
+        const valoresActualizados = {
+            ...values,
+            ingredientesReceta: ingredientes,
+            pasosReceta: pasos,
+        };
+        await createRecipe(valoresActualizados);
     };
 
     return (
@@ -45,97 +75,165 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
             {isVisible && (
                 <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center">
                     <div className="w-[1000px]">
-                        <button className="bg-red-500 text-white text-xl font-normal rounded-full px-2 float-right" onClick={() => onClose()}>
+                        <button
+                            className="bg-red-500 text-white text-xl font-normal rounded-full px-2 float-right"
+                            onClick={() => onClose()}
+                        >
                             X
                         </button>
                         <div className="bg-white rounded mt-5">
                             <div className="grid grid-cols-12">
                                 <div className="col-span-5">
-                                    <img className="object-cover overflow-hidden" style={customSize} src="https://via.placeholder.com/200x270" alt="" />
+                                    <img
+                                        className="object-cover overflow-hidden"
+                                        style={customSize}
+                                        src="https://via.placeholder.com/200x270"
+                                        alt=""
+                                    />
                                 </div>
                                 <div className="col-span-7 px-4 py-3">
-                                    <Formik
-                                        initialValues={{ nombreReceta: '', descripcionReceta: '', ingredientesReceta: [], pasosReceta: [] }}
-                                        validationSchema={validationSchema}
-                                        validateOnBlur={false}
-                                        validateOnChange={true}
-                                        onSubmit={(values, actions) => handleSubmit(values, actions)}
-                                    >
-                                        {({ values, setFieldValue }) => (
-                                            <Form className="space-y-4">
-                                                <div>
-                                                    <label htmlFor="nombreReceta">Nombre:</label>
-                                                    <Field
-                                                        type="text"
-                                                        name="nombreReceta"
-                                                        id="nombreReceta"
-                                                        placeholder="Ingresa el nombre de la receta"
-                                                        className="block"
-                                                    />
-                                                    <ErrorMessage name="nombreReceta" component="div" className="text-red-500 text-sm" />
+                                    <form onSubmit={handleSubmit(onSubmit)}>
+                                        <div className="mb-4">
+                                            <label htmlFor="nombreReceta" className="block mb-2">Nombre:</label>
+                                            <input
+                                                {...register('nombreReceta')}
+                                                type="text"
+                                                name="nombreReceta"
+                                                id="nombreReceta"
+                                                placeholder="Ingresa el nombre de la receta"
+                                                className="block w-full border border-gray-300 rounded px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                            />
+                                            {errors.nombreReceta && (
+                                                <div className="text-red-500 text-sm">
+                                                    {errors.nombreReceta.message}
                                                 </div>
-                                                <div>
-                                                    <label htmlFor="descripcionReceta">Descripción:</label>
-                                                    <Field
-                                                        as="textarea"
-                                                        name="descripcionReceta"
-                                                        id="descripcionReceta"
-                                                        placeholder="Ingresa la descripción de la receta"
-                                                        className="block"
-                                                    />
-                                                    <ErrorMessage name="descripcionReceta" component="div" className="text-red-500 text-sm" />
+                                            )}
+                                        </div>
+                                        <div className="mb-4">
+                                            <label htmlFor="descripcionReceta" className="block mb-2">Descripción:</label>
+                                            <textarea
+                                                {...register('descripcionReceta')}
+                                                name="descripcionReceta"
+                                                id="descripcionReceta"
+                                                placeholder="Ingresa la descripción de la receta"
+                                                className="block w-full border border-gray-300 rounded px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                            />
+                                            {errors.descripcionReceta && (
+                                                <div className="text-red-500 text-sm">
+                                                    {errors.descripcionReceta.message}
                                                 </div>
-                                                <div>
-                                                    <label htmlFor="ingredientesReceta">Ingredientes:</label>
-                                                    <Field
-                                                        as="textarea"
-                                                        name="ingredientesReceta"
-                                                        id="ingredientesReceta"
-                                                        placeholder="Ingresa los ingredientes de la receta"
-                                                        className="block"
-                                                        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
-                                                            const ingredientes = event.target.value.split('\n');
-                                                            setFieldValue('ingredientesReceta', ingredientes);
-                                                        }}
-                                                        value={values.ingredientesReceta.join('\n')}
-                                                    />
-                                                    <ErrorMessage name="ingredientesReceta" component="div" className="text-red-500 text-sm" />
+                                            )}
+                                        </div>
+                                        <div className="mb-4">
+                                            <label htmlFor="ingredientesReceta" className="block mb-2">Ingredientes:</label>
+                                            <div className="flex">
+                                                <input
+                                                    type="text"
+                                                    value={inputIngrediente}
+                                                    onChange={(e) => setInputIngrediente(e.target.value)}
+                                                    placeholder="Ingresa un ingrediente"
+                                                    className="flex-grow border border-gray-300 rounded-l px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={agregarIngrediente}
+                                                    className="bg-green-500 text-white px-4 py-2 rounded-r"
+                                                >
+                                                    <FontAwesomeIcon icon={faPlus} />
+                                                </button>
+                                            </div>
+                                            <div className="bg-gray-100 p-2 rounded max-h-[100px] overflow-y-scroll mt-2">
+                                                <ul>
+                                                    {ingredientes.map((ingrediente, index) => (
+                                                        <li key={index} className="flex justify-between items-center mb-1">
+                                                            <div>{ingrediente}</div>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => eliminarIngrediente(index)}
+                                                                className="bg-red-500 text-white px-2 py-1 rounded"
+                                                            >
+                                                                <FontAwesomeIcon icon={faMinus} />
+                                                            </button>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                            {errors.ingredientesReceta && (
+                                                <div className="text-red-500 text-sm">
+                                                    {errors.ingredientesReceta.message}
                                                 </div>
-                                                <div>
-                                                    <label htmlFor="pasosReceta">Pasos:</label>
-                                                    <Field
-                                                        as="textarea"
-                                                        name="pasosReceta"
-                                                        id="pasosReceta"
-                                                        placeholder="Ingresa los pasos de la receta"
-                                                        className="block"
-                                                        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
-                                                            const pasos = event.target.value.split('\n');
-                                                            setFieldValue('pasosReceta', pasos);
-                                                        }}
-                                                        value={values.pasosReceta.join('\n')}
-                                                    />
-                                                    <ErrorMessage name="pasosReceta" component="div" className="text-red-500 text-sm" />
+                                            )}
+                                        </div>
+                                        <div className="mb-4">
+                                            <label htmlFor="pasosReceta" className="block mb-2">Pasos:</label>
+                                            <div className="flex">
+                                                <input
+                                                    type="text"
+                                                    value={inputPaso}
+                                                    onChange={(e) => setInputPaso(e.target.value)}
+                                                    placeholder="Ingresa un paso"
+                                                    className="flex-grow border border-gray-300 rounded-l px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={agregarPaso}
+                                                    className="bg-green-500 text-white px-4 py-2 rounded-r"
+                                                >
+                                                    <FontAwesomeIcon icon={faPlus} />
+                                                </button>
+                                            </div>
+                                            <div className="bg-gray-100 p-2 rounded max-h-[100px] overflow-y-scroll mt-2">
+                                                <ol>
+                                                    {pasos.map((paso, index) => (
+                                                        <li key={index} className="flex justify-between items-center mb-1">
+                                                            <div>{paso.numero}. {paso.descripcion}</div>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => eliminarPaso(index)}
+                                                                className="bg-red-500 text-white px-2 py-1 rounded"
+                                                            >
+                                                                <FontAwesomeIcon icon={faMinus} />
+                                                            </button>
+                                                        </li>
+                                                    ))}
+                                                </ol>
+                                            </div>
+                                            {errors.pasosReceta && (
+                                                <div className="text-red-500 text-sm">
+                                                    {errors.pasosReceta.message}
                                                 </div>
-                                                <div>
-                                                    <label htmlFor="fotoReceta">Foto:</label>
-                                                    <input
-                                                        type="file"
-                                                        name="fotoReceta"
-                                                        id="fotoReceta"
-                                                        onChange={(event) => handleFileChange(event, setFieldValue)}
-                                                        className="block"
-                                                    />
-                                                    <ErrorMessage name="fotoReceta" component="div" className="text-red-500 text-sm" />
-                                                </div>
-                                                <div>
-                                                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                        Enviar
-                                                    </button>
-                                                </div>
-                                            </Form>
-                                        )}
-                                    </Formik>
+                                            )}
+                                        </div>
+                                        {/* <div>
+                    <label htmlFor="fotoReceta">Foto:</label>
+                    <input
+                      {...register('fotoReceta')}
+                      type="file"
+                      name="fotoReceta"
+                      id="fotoReceta"
+                      onChange={(event) => {
+                        if (event.target.files) {
+                          setValue('fotoReceta', event.target.files[0]);
+                        }
+                      }}
+                      className="block"
+                    />
+                    {errors.fotoReceta && (
+                      <div className="text-red-500 text-sm">
+                        {/* {errors.fotoReceta.message}}
+                      </div>
+                    )}
+                  </div> */}
+
+                                        <div className="mb-4">
+                                            <button
+                                                type="submit"
+                                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                            >
+                                                Enviar
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
