@@ -1,16 +1,18 @@
 import axios from "./axiosInstance";
 import { User , LoginFormValues} from "../features/user/userInterfaces";
-export const registerUser = async (email: string, password: string) => {
+
+export const registerUser = async (email: string, password: string, nickname: string) => {
   try {
-    const response = await axios.post("/auth/register", {
-      email,
-      password,
-    });
-    return response.data;
-  } catch (error) {
-    console.log('Error',error);
-    
-  }
+      const response = await axios.post('/usuarios/', {
+          email,
+          password,
+          nickname
+      });
+      return response.data;
+  } catch (error) 
+    {
+      throw new Error('Error al registrar usuario.');
+    }
 };
 
 //Mapear a futuro

@@ -18,7 +18,7 @@ const RegisterForm: React.FC<RegisterFormProps> = () => {
         validationSchema: RegisterValidate,
         onSubmit: async (values) => {
             try {
-                const response = await registerUser(values.email, values.password);
+                const response = await registerUser(values.email, values.password, "Cami");
                 console.log('Usuario registrado con éxito:', response);
                 navigate('/');
               } catch (error) {
