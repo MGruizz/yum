@@ -3,35 +3,33 @@ import { FaPen } from "react-icons/fa";
 import Header from "../../components/Header/Header";
 import { getUserById } from "../../api/usersApi";
 import { User } from "../../features/user/userInterfaces";
-
+import { useParams } from "react-router-dom";
 //Hay que hacer logica de token para que sepa que usuario es el que esta viendo el perfil, si es el original o el de otro usuario
 
-interface UserProfileProps {
-  currentUser: number; // ID del usuario actual
-  profileUser: number; // ID del perfil que se está viendo
-}
 
-const UserProfile: React.FC<UserProfileProps> = ({
-  currentUser,
-  profileUser,
-}) => {
+
+const UserProfile: React.FC = () => {
+  const currentUser = "1";
+  const  { userId  } = useParams();
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userData = await getUserById(profileUser);
-        setUser(userData);
+        if (userId){
+          const userData = await getUserById(userId);
+          setUser(userData);
+        }
       } catch (error) {
         console.error("Error al cargar la información del usuario");
       }
     };
 
     fetchUser();
-  }, [profileUser]);
+  }, [userId ]);
   console.log(user);
   // Verifica si el perfil pertenece al usuario actual
-  const isCurrentUserProfile = currentUser === profileUser;
+  const isCurrentUserProfile = currentUser === userId ;
   return (
     <div>
       <Header />
@@ -47,6 +45,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
           )}
           {/* Grid de info usuario */}
           <div className="grid grid-rows-3 grid-cols-1 sm:grid-cols-3 gap-4">
+            
             {/* Grid imagen */}
             <div className="row-span-3 flex justify-center col-span-1 ">
               {user && user?.foto_perfil ? (

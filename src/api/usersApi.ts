@@ -33,7 +33,7 @@ export const loginUser = async (values: LoginFormValues) => {
 
 
 
-export const getUserById = async (id: number): Promise<User> => {
+export const getUserById = async (id: string): Promise<User> => {
   try {
     const response = await instance.get<User>(`/usuarios/${id}`);
     return response.data;
