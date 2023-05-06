@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa";
 import Header from "../../components/Header/Header";
-import { getUserById } from "../../api/usersApi";
+import { getUserById , getRecipesByUserId} from "../../api/usersApi";
 import { User } from "../../features/user/userInterfaces";
 import { useParams } from "react-router-dom";
+import { Recipe } from "../../features/recipe/recipeInterfaces";
 //Hay que hacer logica de token para que sepa que usuario es el que esta viendo el perfil, si es el original o el de otro usuario
 
 
 
 const UserProfile: React.FC = () => {
   const currentUser = "1";
+  const [publicacionesUsuarios, setPublicacionesUsuarios] = useState<Recipe[]>([]);
   const  { userId  } = useParams();
   const [user, setUser] = useState<User | null>(null);
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -19,6 +22,8 @@ const UserProfile: React.FC = () => {
         if (userId){
           const userData = await getUserById(userId);
           setUser(userData);
+          const recipesData = await getRecipesByUserId(userId);
+          setPublicacionesUsuarios(recipesData);
         }
       } catch (error) {
         console.error("Error al cargar la información del usuario");
@@ -27,22 +32,18 @@ const UserProfile: React.FC = () => {
 
     fetchUser();
   }, [userId ]);
-  console.log(user);
+  
   // Verifica si el perfil pertenece al usuario actual
   const isCurrentUserProfile = currentUser === userId ;
+
+  console.log('Publicaciones!',publicacionesUsuarios);
+
   return (
     <div>
       <Header />
       <div className="min-h-screen bg-gray-200">
         <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 bg-white shadow-lg">
-          {isCurrentUserProfile && (
-            <div className="flex justify-end">
-              <button className="flex justify-end">
-                {" "}
-                <FaPen />
-              </button>
-            </div>
-          )}
+          
           {/* Grid de info usuario */}
           <div className="grid grid-rows-3 grid-cols-1 sm:grid-cols-3 gap-4">
             
@@ -88,10 +89,10 @@ const UserProfile: React.FC = () => {
           {/* Grid Publicaciones */}
           <h1 className="text-2xl font-bold text-gray-800">Publicaciones</h1>
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center items-center">
-            {Array.from({ length: 12 }, (_, index) => (
+            {publicacionesUsuarios.map((recipe, index) => (
               <div key={index} className="overflow-hidden rounded-md">
                 <img
-                  src={`https://via.placeholder.com/350`}
+                  src={ 'https://via.placeholder.com/350'}
                   alt={`Post ${index + 1}`}
                   className="w-full object-cover transform hover:scale-110 transition-all duration-200"
                 />
