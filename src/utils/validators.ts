@@ -15,3 +15,10 @@ export const LoginValidate = Yup.object({
       .required('La contraseña es obligatoria'),
 });
 
+export const validationSchema = Yup.object().shape({
+  nombreReceta: Yup.string().required('Debe ingresar un nombre a la receta'),
+  descripcionReceta: Yup.string().required('Debe ingresar una descripción para la receta'),
+  ingredientesReceta: Yup.array().min(1, 'Debe ingresar al menos un ingrediente'),
+  pasosReceta: Yup.array().min(1, 'Debe ingresar al menos un paso'),
+  // fotoReceta: Yup.mixed().required('Debe cargar una foto de la receta'),
+});
