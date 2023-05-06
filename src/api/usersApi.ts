@@ -1,9 +1,10 @@
-import axios from "./axiosInstance";
+import instance from "./axiosInstance";
 import { User , LoginFormValues} from "../features/user/userInterfaces";
 import { Recipe } from "../features/recipe/recipeInterfaces";
+
 export const registerUser = async (email: string, password: string) => {
   try {
-    const response = await axios.post("/auth/register", {
+    const response = await instance.post("/auth/register", {
       email,
       password,
     });
@@ -19,7 +20,7 @@ export const registerUser = async (email: string, password: string) => {
 
 export const loginUser = async (values: LoginFormValues) => {
   try {
-    const response = await axios.post("/login/", {
+    const response = await instance.post("/login/", {
       email: values.email,
       password: values.password,
     });
@@ -36,7 +37,7 @@ export const loginUser = async (values: LoginFormValues) => {
 
 export const getUserById = async (id: string): Promise<User> => {
   try {
-    const response = await axios.get<User>(`/usuarios/${id}`);
+    const response = await instance.get<User>(`/usuarios/${id}`);
     return response.data;
   } catch (error) {
     throw new Error('Error al obtener información del usuario');

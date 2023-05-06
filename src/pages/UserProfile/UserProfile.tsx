@@ -5,7 +5,7 @@ import { getUserById , getRecipesByUserId} from "../../api/usersApi";
 import { User } from "../../features/user/userInterfaces";
 import { useParams } from "react-router-dom";
 import { Recipe } from "../../features/recipe/recipeInterfaces";
-//Hay que hacer logica de token para que sepa que usuario es el que esta viendo el perfil, si es el original o el de otro usuario
+
 
 
 
@@ -36,7 +36,7 @@ const UserProfile: React.FC = () => {
   // Verifica si el perfil pertenece al usuario actual
   const isCurrentUserProfile = currentUser === userId ;
 
-  console.log('Publicaciones!',publicacionesUsuarios);
+
 
   return (
     <div>
