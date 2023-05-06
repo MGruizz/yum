@@ -18,7 +18,7 @@ export const registerUser = async (email: string, password: string) => {
 
 export const loginUser = async (values: LoginFormValues) => {
   try {
-    const response = await axios.post("/login/", {
+    const response = await axios.post("/usuarios/login/", {
       email: values.email,
       password: values.password,
     });
