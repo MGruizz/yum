@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getToken } from '../api/authApi';
 
 interface AuthContextData {
   isAuthenticated: boolean;
@@ -19,10 +20,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    // const token = localStorage.getItem('authToken');
+    
+    // if (token) {
+    //   setAuthenticated(true);
+    // }
+
+    const token = getToken();
+
     if (token) {
       setAuthenticated(true);
     }
+
   }, []);
 
   return (
