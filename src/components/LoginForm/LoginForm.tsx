@@ -5,21 +5,26 @@ import { loginUser } from '../../api/usersApi';
 import { saveToken } from '../../api/authApi';
 import { LoginFormValues } from '../../features/user/userInterfaces';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 
 function LoginForm() {
 
   const navigate = useNavigate();
+  const { setAuthenticated } = useAuth();
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
       const token = await loginUser(values);
-      saveToken(token);
-      navigate('/');
+
+      if (token) {
+        saveToken(token);
+        setAuthenticated(true);
+        navigate('/', {replace: true});
+      }
     } catch (error) {
       console.error('Error al iniciar sesión', error);
       throw new Error("Error al iniciar sesión");
-      
     }
   };
 
