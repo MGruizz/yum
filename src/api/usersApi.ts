@@ -1,8 +1,10 @@
-import axios from "./axiosInstance";
+import instance from "./axiosInstance";
 import { User , LoginFormValues} from "../features/user/userInterfaces";
+import { Recipe } from "../features/recipe/recipeInterfaces";
+
 export const registerUser = async (email: string, password: string) => {
   try {
-    const response = await axios.post("/auth/register", {
+    const response = await instance.post("/auth/register", {
       email,
       password,
     });
@@ -13,12 +15,16 @@ export const registerUser = async (email: string, password: string) => {
   }
 };
 
-//Mapear a futuro
+
 
 
 export const loginUser = async (values: LoginFormValues) => {
   try {
+<<<<<<< HEAD
     const response = await axios.post("/usuarios/login/", {
+=======
+    const response = await instance.post("/login/", {
+>>>>>>> 54cfc876b74624e6b5ff07b39b201ddcde9d108f
       email: values.email,
       password: values.password,
     });
@@ -29,13 +35,22 @@ export const loginUser = async (values: LoginFormValues) => {
   }
 };
 
-//Mapear a futuro
 
 
 
-export const getUserById = async (id: number): Promise<User> => {
+
+export const getUserById = async (id: string): Promise<User> => {
   try {
-    const response = await axios.get<User>(`/usuarios/${id}`);
+    const response = await instance.get<User>(`/usuarios/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al obtener información del usuario');
+  }
+};
+
+export const getRecipesByUserId = async (id: string): Promise<Recipe[]> => {
+  try {
+    const response = await instance.get<Recipe[]>(`/recetas/${id}`);
     return response.data;
   } catch (error) {
     throw new Error('Error al obtener información del usuario');
