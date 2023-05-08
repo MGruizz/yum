@@ -19,6 +19,13 @@ const AppRouter: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterPage />} />
 
+=========
+        <Route path="/" element={<FrontPage/>} />
+        <Route path="/login" element={<Login/>} />
+        <Route path="/profile/:userId" element={<UserProfile/>} />
+        <Route path="/register" element={<RegisterPage/>} />
+        <Route path="/search" element={<PostList/>} />
+>>>>>>>>> Temporary merge branch 2
         {/* Agrega otras rutas aquí según sea necesario */}
       </Routes>
     </Router>
