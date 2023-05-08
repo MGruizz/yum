@@ -11,10 +11,13 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import CrearReceta from "../CrearReceta/CrearReceta";
+import { useAuth } from '../../context/AuthContext';
+import { removeToken } from '../../api/authApi';
 
 const Header: React.FC<HeaderProps> = () => {
   const [showModal, setShowModal] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const { setAuthenticated } = useAuth();
 
   const closeSidebar = () => {
     setShowSidebar(false);
@@ -45,8 +48,9 @@ const Header: React.FC<HeaderProps> = () => {
     navigate("/");
   };
   const hanldeLogOutClick = () => {
-    navigate("/login");
-    //removeToken();
+    removeToken();
+    setAuthenticated(false);
+    navigate('/login');
   };
   const handleRecipeAndClose = () => {
     handleRecipeClick();
