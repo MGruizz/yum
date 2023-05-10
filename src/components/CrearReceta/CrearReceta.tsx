@@ -6,6 +6,7 @@ import { validationSchema } from '../../utils/validators';
 import createRecipe from '../../api/recipeApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import Categorias from '../Categories/Categorias';
 
 const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
 
@@ -204,6 +205,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                                                 </div>
                                             )}
                                         </div>
+                                        <Categorias></Categorias>
                                         {/* <div>
                     <label htmlFor="fotoReceta">Foto:</label>
                     <input
