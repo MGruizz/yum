@@ -5,8 +5,10 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { CategoriasRecetasProps } from "../../interfaces/CategoriasRecetasProps/CategoriasRecetasProps";
+import CategoriasPopulares from "../CategoriasPopulares/CategoriasPopulares";
 
-const Categorias: React.FC = () => {
+const Categorias: React.FC<CategoriasRecetasProps> = ({setCategories}) => {
   const [categorias, setCategorias] = useState<Categories[]>([]);
 
   useEffect(() => {
@@ -31,6 +33,10 @@ const Categorias: React.FC = () => {
     setSelectedCategories(selectedCategories.filter((_, i) => i !== index));
     setCategorias([...categorias, removedCategory]);
   };
+
+  useEffect(() => {
+    setCategories(selectedCategories.map(c => c.id))
+  }, [categorias]) 
 
   return (
     <div>

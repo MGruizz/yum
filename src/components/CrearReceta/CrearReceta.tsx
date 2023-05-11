@@ -16,6 +16,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
     const [inputIngrediente, setInputIngrediente] = useState<string>('');
     const [inputPaso, setInputPaso] = useState<string>('');
     const [numeroPasos, setNumeroPasos] = useState<number>(1);
+    const [recipeCategorias, setRecipeCategorias] = useState<number[]>([]);
 
     const { register, handleSubmit, control, formState: { errors } } = useForm<FormRecetasInputs>({
         // @ts-ignore
@@ -67,8 +68,9 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
             ...values,
             ingredientesReceta: ingredientes,
             pasosReceta: pasos,
+            categoriasReceta: recipeCategorias
         };
-        await createRecipe(valoresActualizados);
+        await createRecipe(valoresActualizados) ? onClose() : console.log('error'); // Agregar pop-up
     };
 
     return (
@@ -205,7 +207,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                                                 </div>
                                             )}
                                         </div>
-                                        <Categorias></Categorias>
+                                        <Categorias setCategories = {setRecipeCategorias}></Categorias>
                                         {/* <div>
                     <label htmlFor="fotoReceta">Foto:</label>
                     <input
