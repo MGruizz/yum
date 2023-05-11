@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ModalRecetasProps } from "../../interfaces/ModalRecetasProps/ModalRecetasProps";
 import { CSSTransition } from "react-transition-group";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import Comentarios from "../Comentarios/Comentarios";
 
 const ModalRecetas: React.FC<ModalRecetasProps> = ({
   isVisible,
@@ -120,7 +121,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                   </div>
 
                   {/* Ingredientes  */}
-                  <div className="relative">
+                  <div className="relative my-3">
                     <button
                       className="w-full  flex items-center justify-between text-xl focus:outline-none"
                       onClick={toggleIngredientes}
@@ -167,6 +168,8 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                         }
                     `}</style>
                   </div>
+                  {/* Comentarios */}
+                  <Comentarios/>
                 </div>
               </div>
             </div>
