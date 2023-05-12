@@ -8,6 +8,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import Categorias from '../Categories/Categorias';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+
 const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
 
     // receta = query(idReceta)
@@ -70,7 +74,16 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
             pasosReceta: pasos,
             categoriasReceta: recipeCategorias
         };
-        await createRecipe(valoresActualizados) ? onClose() : console.log('error'); // Agregar pop-up
+        const result = await createRecipe(valoresActualizados);
+        if (result) {
+            console.log('antes');
+            toast.success('Receta creada con éxito!');
+            console.log('después');
+            onClose();
+        } else {
+            toast.error('Hubo un error al crear la receta');
+        }
+        // await createRecipe(valoresActualizados) ? onClose() : console.log('error'); // Agregar pop-up
     };
 
     return (
@@ -244,6 +257,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                     </div>
                 </div>
             )}
+            <ToastContainer position="bottom-right" />
         </div>
     );
 };
