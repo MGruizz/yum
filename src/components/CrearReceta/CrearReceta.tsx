@@ -6,6 +6,11 @@ import { validationSchema } from '../../utils/validators';
 import createRecipe from '../../api/recipeApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import Categorias from '../Categories/Categorias';
+
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
 
@@ -15,6 +20,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
     const [inputIngrediente, setInputIngrediente] = useState<string>('');
     const [inputPaso, setInputPaso] = useState<string>('');
     const [numeroPasos, setNumeroPasos] = useState<number>(1);
+    const [recipeCategorias, setRecipeCategorias] = useState<number[]>([]);
 
     const { register, handleSubmit, control, formState: { errors } } = useForm<FormRecetasInputs>({
         // @ts-ignore
@@ -66,8 +72,18 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
             ...values,
             ingredientesReceta: ingredientes,
             pasosReceta: pasos,
+            categoriasReceta: recipeCategorias
         };
-        await createRecipe(valoresActualizados);
+        const result = await createRecipe(valoresActualizados);
+        if (result) {
+            console.log('antes');
+            toast.success('Receta creada con éxito!');
+            console.log('después');
+            onClose();
+        } else {
+            toast.error('Hubo un error al crear la receta');
+        }
+        // await createRecipe(valoresActualizados) ? onClose() : console.log('error'); // Agregar pop-up
     };
 
     return (
@@ -204,6 +220,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                                                 </div>
                                             )}
                                         </div>
+                                        <Categorias setCategories = {setRecipeCategorias}></Categorias>
                                         {/* <div>
                     <label htmlFor="fotoReceta">Foto:</label>
                     <input
@@ -240,6 +257,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                     </div>
                 </div>
             )}
+            <ToastContainer position="bottom-right" />
         </div>
     );
 };
