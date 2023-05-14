@@ -37,9 +37,11 @@ export const loginUser = async (values: LoginFormValues) => {
 
 export const getUserById = async (id: string): Promise<User> => {
   try {
+    console.log("HOLA 1")
     const response = await instance.get<User>(`/usuarios/${id}`);
     return response.data;
   } catch (error) {
+    console.log(error)
     throw new Error('Error al obtener información del usuario');
   }
 };

@@ -4,9 +4,9 @@ import ModalRecetas from '../../components/ModalRecetas/ModalRecetas';
 import { getPopularRecipes } from '../../api/recipeApi';
 
 const RecetasPopulares = () => {
-    const [recetasPopulares, setRecetasPopulares] = useState<Recipe[]>([]);
+    const [recetasPopulares, setRecetasPopulares] = useState<PopularRecipe[]>([]);
     const [showModal, setShowModal] = useState(false);
-    const [receta, setReceta] = useState({ titulo: '' });
+    const [receta, setReceta] = useState({ id: '', name: '', description: '' });
 
     useEffect(() => {
         getPopularRecipes()
@@ -19,9 +19,13 @@ const RecetasPopulares = () => {
             });
     }, []);
 
-    const handleShowModal = (tituloReceta: string) => {
+    const handleShowModal = (recipeId: string, recipeName: string, recipeDescription: string) => {
         setShowModal(true)
-        setReceta({ titulo: tituloReceta });
+        setReceta({ 
+             id: recipeId,
+             name: recipeName,
+             description: recipeDescription
+        });
     }
 
     return (
@@ -30,16 +34,16 @@ const RecetasPopulares = () => {
                 <h2 className="text-4xl font-bold mb-2 mt-4">Recetas Populares</h2>
                 <hr className="w-full mt-8 mb-4 border-gray-400" />
                 <div className='flex flex-wrap gap-4 justify-center px-4'>
-                    {recetasPopulares.map((receta, index) => (
-                        <div className="flex-shrink-0" onClick={() => handleShowModal(receta.titulo)} key={index}>
+                    {recetasPopulares.map((recipe, index) => (
+                        <div className="flex-shrink-0" onClick={() => handleShowModal(recipe.id, recipe.nombre, recipe.descripcion)} key={index}>
                             <RecipeCard
-                                title={receta.titulo}
-                                subtitulo={receta.subtitulo}
+                                title={recipe.nombre}
+                                subtitulo={recipe.descripcion}
                                 imageUrl="https://via.placeholder.com/200x270"
                             />
                         </div>
                     ))}
-                    {showModal && <ModalRecetas tituloReceta={receta.titulo} isVisible={showModal} onClose={() => setShowModal(false)} />}
+                    {showModal && <ModalRecetas tituloReceta={receta.name} isVisible={showModal} onClose={() => setShowModal(false)} recipeId={receta.id} />}
                 </div>
             </div>
         </Fragment>

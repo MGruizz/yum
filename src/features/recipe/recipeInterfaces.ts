@@ -9,3 +9,16 @@ export interface Recipe{
     likes: number;
     views: number;
 }
+
+export interface Step{
+    idStep: number;
+    recetaId: number;
+    orden: number;
+    descripcion: string;
+}
+
+export interface Ingredient{
+    idIngredient: number;
+    recetaId: number;
+    nombre: number;
+}
