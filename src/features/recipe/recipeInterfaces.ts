@@ -22,3 +22,10 @@ export interface Ingredient{
     recetaId: number;
     nombre: number;
 }
+
+export interface Comment{
+    idComment: number;
+    descripcion: string;
+    usuarioId: number;
+    recetaId: number;
+}

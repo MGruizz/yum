@@ -1,4 +1,4 @@
-import { Ingredient, Recipe, Step } from "../features/recipe/recipeInterfaces";
+import { Comment, Ingredient, Recipe, Step } from "../features/recipe/recipeInterfaces";
 
 export function mapDbObjectToRecipe(dbObject: any): Recipe {
     return {
@@ -28,6 +28,14 @@ export function mapDbObjectToIngredient(dbObject: any): Ingredient {
         idIngredient: dbObject.id,
         recetaId: dbObject.receta_id,
         nombre: dbObject.nombre,
+    };
+}
 
+export function mapDbObjectToComment(dbObject: any): Comment {
+    return {
+        idComment: dbObject.id,
+        descripcion: dbObject.descripcion,
+        usuarioId: dbObject.usuario_id,
+        recetaId: dbObject.receta_id,
     };
 }

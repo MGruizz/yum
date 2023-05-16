@@ -3,11 +3,11 @@ import { ModalRecetasProps } from "../../interfaces/ModalRecetasProps/ModalRecet
 import { CSSTransition } from "react-transition-group";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import Comentarios from "../Comentarios/Comentarios";
-import { getIngredientsByRecipeId, getRecipeById, getStepsByRecipeId } from "../../api/recipeApi";
+import { getCommentsByRecipeId, getIngredientsByRecipeId, getRecipeById, getStepsByRecipeId } from "../../api/recipeApi";
 import { getUserById } from "../../api/usersApi";
 import { User } from "../../features/user/userInterfaces";
-import { Ingredient, Recipe, Step } from "../../features/recipe/recipeInterfaces";
-import { mapDbObjectToIngredient, mapDbObjectToRecipe, mapDbObjectToSteps } from "../../utils/mapper";
+import { Comment, Ingredient, Recipe, Step } from "../../features/recipe/recipeInterfaces";
+import { mapDbObjectToComment, mapDbObjectToIngredient, mapDbObjectToRecipe, mapDbObjectToSteps } from "../../utils/mapper";
 
 const ModalRecetas: React.FC<ModalRecetasProps> = ({
   isVisible,
@@ -19,6 +19,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   const [user, setUser] = useState<User | null>(null);
   const [steps, setSteps] = useState<Step[] | null>(null);
   const [ingredients, setIngredients] = useState<Ingredient[] | null>(null);
+  const [comments, setComments] = useState<Comment[] | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,9 +29,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
         setRecipe(recipe);
 
         if (recipe.userId) {
-          console.log("1")
           const fetchedUser = await getUserById(recipe.userId.toString());
-          console.log("2")
           setUser(fetchedUser);
         }
 
@@ -42,6 +41,10 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
           const fetchedIngredients = await getIngredientsByRecipeId(recipeId);
           const mappedIngredients = fetchedIngredients.map(mapDbObjectToIngredient);
           setIngredients(mappedIngredients);
+
+          const fetchedComments = await getCommentsByRecipeId(recipeId);
+          const mappedComments = fetchedComments.map(mapDbObjectToComment);
+          setComments(mappedComments);
         }
 
       } catch (error) {
@@ -206,7 +209,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                     `}</style>
                     </div>
                     {/* Comentarios */}
-                    <Comentarios />
+                    {comments ? <Comentarios comments={comments}/> : null}
                   </div>
                 </div>
               </div>

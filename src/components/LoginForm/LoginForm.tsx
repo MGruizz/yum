@@ -20,11 +20,10 @@ function LoginForm() {
       if (token) {
         saveToken(token);
         setAuthenticated(true);
-        navigate('/', {replace: true});
+        navigate('/', { replace: true });
       }
     } catch (error) {
-      console.error('Error al iniciar sesión', error);
-      throw new Error("Error al iniciar sesión");
+      throw new Error("Error al iniciar sesión:" + error);
     }
   };
 
@@ -32,7 +31,7 @@ function LoginForm() {
 
     <Formik
       initialValues={{
-        email: '', 
+        email: '',
         password: ''
       }}
       validationSchema={LoginValidate}

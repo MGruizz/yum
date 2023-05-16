@@ -12,7 +12,6 @@ const RecetasPopulares = () => {
         getPopularRecipes()
             .then(data => {
                 setRecetasPopulares(data);
-                console.log('recetas populares', data)
             })
             .catch(error => {
                 console.error(error);

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Ingredient, Recipe, Step } from '../features/recipe/recipeInterfaces';
+import { Ingredient, Recipe, Step, Comment } from '../features/recipe/recipeInterfaces';
 
 export const createRecipe = async (data: any) => {
   try {
@@ -60,6 +60,15 @@ export const getIngredientsByRecipeId = async (id: string): Promise<Ingredient[]
     return response.data;
   } catch (error) {
     throw new Error('Error al obtener los ingredientes de la receta.');
+  }
+};
+
+export const getCommentsByRecipeId = async (id: string): Promise<Comment[]> => {
+  try {
+    const response = (await axios.get<Comment[]>(`http://localhost:3000/comentarios/receta/${id}`));
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al obtener los comentarios de la receta.');
   }
 };
 
