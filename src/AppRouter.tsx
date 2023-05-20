@@ -13,9 +13,9 @@ const AppRouter: React.FC = () => {
       <Routes>
         <Route element={<PrivateRoute />}>
           <Route path="/profile/:userId" element={<UserProfile/>} />
-          <Route path="/search" element={<PostList />} />
-          <Route path="/" element={<FrontPage />} />
+          <Route path="/search" element={<PostList />} />  
         </Route>
+        <Route path="/" element={<FrontPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterPage />} />
         {/* Agrega otras rutas aquí según sea necesario */}

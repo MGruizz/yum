@@ -1,5 +1,5 @@
 export interface User {
-    idUser: number;
+    id: number;
     username:  string;
     email: string;
     descripcion: string;
@@ -10,3 +10,4 @@ export interface LoginFormValues {
     email: string;
     password: string;
   }
+

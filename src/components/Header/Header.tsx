@@ -7,14 +7,19 @@ import {
   AiOutlineHome,
   AiOutlineMenu,
   AiOutlinePlusCircle,
+  AiOutlineUserAdd,
+  AiOutlineLogin
 } from "react-icons/ai";
 
 import { useNavigate } from "react-router-dom";
 import CrearReceta from "../CrearReceta/CrearReceta";
 import { useAuth } from '../../context/AuthContext';
-import { removeToken } from '../../api/authApi';
+import { removeToken,getUserToken } from '../../api/authApi';
+
+
 
 const Header: React.FC<HeaderProps> = () => {
+  const userToken =  getUserToken();
   const [showModal, setShowModal] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const { setAuthenticated } = useAuth();
@@ -38,7 +43,7 @@ const Header: React.FC<HeaderProps> = () => {
   };
 
   const handleProfileClick = () => {
-    navigate("/profile/1");
+    navigate(`/profile/${userToken?.id}`);
   };
 
   const handleRecipeClick = () => {
@@ -108,9 +113,12 @@ const Header: React.FC<HeaderProps> = () => {
 
           {/* Elementos del usuario */}
           <div className="hidden sm:block sm:col-span-2 xl:col-span-1">
-            <p className="text-xl mb-1">Bienvenido User!</p>
+            <p className="text-xl mb-1">Bienvenido {userToken?.username}!</p>
             <div className="flex  items-center justify-center">
-              <button
+              {userToken !== null ? (
+                <>
+                
+                <button
                 className="bg-transparent mr-2 flex gap-2 text-gray-500 hover:text-blue-900 transition duration-500"
                 onClick={handleProfileClick}
               >
@@ -125,6 +133,27 @@ const Header: React.FC<HeaderProps> = () => {
                 <AiOutlineLogout className="text-2xl" />
                 Cerrar sesion
               </button>
+              </>
+              ):(
+                <>
+                <button
+                className="bg-transparent mr-2 flex gap-2 text-gray-500 hover:text-blue-900 transition duration-500"
+                onClick={handleLoginClick}
+              >
+                <AiOutlineLogin className="text-2xl" />
+                Iniciar sesion
+              </button>
+
+              <button
+                className="bg-transparent mr-2 flex gap-2 text-gray-500 hover:text-blue-900 transition duration-500"
+                onClick={handleRegisterClick}
+              >
+                <AiOutlineUserAdd className="text-2xl" />
+                Registrarse
+              </button>
+              </>
+              )}
+              
             </div>
           </div>
         </div>
@@ -147,7 +176,7 @@ const Header: React.FC<HeaderProps> = () => {
               </div>
               {/* Mensaje bienvenida */}
               <div className="mt-10">
-                <p className="text-xl mb-1">Bienvenido User!</p>
+                <p className="text-xl mb-1">Bienvenido {userToken?.username}!</p>
                 <div className="flex  items-center justify-center"></div>
               </div>
               {/* Boton Casa */}
@@ -160,37 +189,61 @@ const Header: React.FC<HeaderProps> = () => {
                   Inicio
                 </button>
               </div>
-              {/* Boton profile */}
-              <div className="mt-10">
-                <button
-                  className="text-xl bg-transparent ml-5 flex gap-2 text-gray-500 hover:text-blue-900 hover:scale-105 transition duration-500"
-                  onClick={handleProfileClick}
-                >
-                  <AiOutlineUser className="text-3xl" />
-                  Perfil
-                </button>
-              </div>
-              {/* Boton nueva receta */}
-              <div className="mt-10">
-                <button
-                  className="text-xl bg-transparent ml-5 flex gap-2 text-gray-500 hover:scale-105 hover:text-blue-900 transition duration-500"
-                  onClick={handleRecipeAndClose}
-                >
-                  <AiOutlinePlusCircle className="text-3xl" />
-                  Nueva receta
-                </button>
-              </div>
-              {/* Boton cerrar sesion */}
-              <div className="mt-10">
-                <button
-                  className="text-xl bg-transparent ml-5 flex gap-2 text-gray-500 hover:scale-105 hover:text-blue-900 transition duration-500"
-                  onClick={hanldeLogOutClick}
-                >
-                  <AiOutlineLogout className="text-3xl" />
-                  Cerrar sesion
-                </button>
-              </div>
-              {/* ... */}
+              
+              {userToken !== null ? (
+              <>
+                <div className="mt-10">
+                  <button
+                    className="text-xl bg-transparent ml-5 flex gap-2 text-gray-500 hover:text-blue-900 hover:scale-105 transition duration-500"
+                    onClick={handleProfileClick}
+                  >
+                    <AiOutlineUser className="text-3xl" />
+                    Perfil
+                  </button>
+                </div>
+                <div className="mt-10">
+                  <button
+                    className="text-xl bg-transparent ml-5 flex gap-2 text-gray-500 hover:scale-105 hover:text-blue-900 transition duration-500"
+                    onClick={handleRecipeAndClose}
+                  >
+                    <AiOutlinePlusCircle className="text-3xl" />
+                    Nueva receta
+                  </button>
+                </div>
+                <div className="mt-10">
+                  <button
+                    className="text-xl bg-transparent ml-5 flex gap-2 text-gray-500 hover:scale-105 hover:text-blue-900 transition duration-500"
+                    onClick={hanldeLogOutClick}
+                  >
+                    <AiOutlineLogout className="text-3xl" />
+                    Cerrar sesión
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mt-10">
+                  <button
+                    className="text-xl bg-transparent ml-5 flex gap-2 text-gray-500 hover:scale-105 hover:text-blue-900 transition duration-500"
+                    onClick={handleLoginClick}
+                  >
+                    <AiOutlineLogin className="text-3xl" />
+                    Iniciar Sesion
+                  </button>
+                </div>
+                <div className="mt-10">
+                  <button
+                    className="text-xl bg-transparent ml-5 flex gap-2 text-gray-500 hover:scale-105 hover:text-blue-900 transition duration-500"
+                    onClick={handleRegisterClick}
+                  >
+                    <AiOutlineUserAdd className="text-3xl" />
+                    Crear cuenta
+                  </button>
+                </div>
+              </>
+            )}
+              
+              
             </div>
           </div>
         )}

@@ -1,3 +1,4 @@
+import { User } from './../features/user/userInterfaces';
 
 export const saveToken = (token: string) => {
     const expiresIn = 60 * 1000;
@@ -21,10 +22,19 @@ export const getToken = (): string | null => {
 
     const currentTime = new Date().getTime();
 
-    if (currentTime > parseInt(tokenExpiration, 10)) {
+    if (currentTime > parseInt(tokenExpiration, 30)) {
         removeToken();
         return null;
     }
 
     return token;
 };
+
+export const getUserToken = ():User|null => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        return null;
+    }
+    const user: User =  JSON.parse(token).user;
+    return user;
+}

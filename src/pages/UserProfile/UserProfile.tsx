@@ -5,39 +5,37 @@ import { getUserById , getRecipesByUserId} from "../../api/usersApi";
 import { User } from "../../features/user/userInterfaces";
 import { useParams } from "react-router-dom";
 import { Recipe } from "../../features/recipe/recipeInterfaces";
-
+import { getUserToken } from "../../api/authApi";
 
 
 
 const UserProfile: React.FC = () => {
-  const currentUser = "1";
   const [publicacionesUsuarios, setPublicacionesUsuarios] = useState<Recipe[]>([]);
   const  { userId  } = useParams();
   const [user, setUser] = useState<User | null>(null);
-
-
+  const [isCurrentUserProfile, setIsCurrentUserProfile] = useState<boolean>();
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        if (userId){
+        const userToken =  getUserToken();
+        if (userId) {
           const userData = await getUserById(userId);
           setUser(userData);
           const recipesData = await getRecipesByUserId(userId);
           setPublicacionesUsuarios(recipesData);
+          if (userToken) {
+            setIsCurrentUserProfile(String(userToken.id) === userId);
+          }
         }
       } catch (error) {
         console.error("Error al cargar la información del usuario");
       }
     };
-
-    fetchUser();
-  }, [userId ]);
   
-  // Verifica si el perfil pertenece al usuario actual
-  const isCurrentUserProfile = currentUser === userId ;
+    fetchUser();
+  }, [userId]);
 
-
-
+  
   return (
     <div>
       <Header />
@@ -67,7 +65,7 @@ const UserProfile: React.FC = () => {
             <div className="col-span-1 md:col-span-2">
               <h1 className="text-2xl font-bold text-gray-800 text-left">
                 {user?.username}
-                {!isCurrentUserProfile ? (
+                {!isCurrentUserProfile && isCurrentUserProfile!== undefined ? (
                   <button className="ml-4 px-4 py-1 font-semibold text-white transition-colors duration-200 rounded-md bg-gray-400 hover:bg-gray-900 text-sm">
                     Seguir
                   </button>
