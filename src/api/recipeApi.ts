@@ -73,3 +73,13 @@ export const getCommentsByRecipeId = async (id: string): Promise<Comment[]> => {
 };
 
 export default createRecipe;
+
+export const getImagesRecipe = async (id: string): Promise<string[]> => {
+  try {
+    const response = (await axios.get(`http://localhost:3000/imagenes/receta/${id}`));
+    return response.data.map((row: any) => row.imagen_url);
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};

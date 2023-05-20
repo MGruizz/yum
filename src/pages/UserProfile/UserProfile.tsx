@@ -6,7 +6,7 @@ import { User } from "../../features/user/userInterfaces";
 import { useParams } from "react-router-dom";
 import { Recipe } from "../../features/recipe/recipeInterfaces";
 import { getUserToken } from "../../api/authApi";
-
+import {getImagesRecipe} from "../../api/recipeApi";
 
 
 const UserProfile: React.FC = () => {
@@ -14,6 +14,8 @@ const UserProfile: React.FC = () => {
   const  { userId  } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [isCurrentUserProfile, setIsCurrentUserProfile] = useState<boolean>();
+  //const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -35,7 +37,16 @@ const UserProfile: React.FC = () => {
     fetchUser();
   }, [userId]);
 
-  
+  // const handleShowModal = (recipeId: string, recipeName: string, recipeDescription: string) => {
+  //   setShowModal(!showModal);
+  //   setReceta({ 
+  //        id: recipeId,
+  //        name: recipeName,
+  //        description: recipeDescription
+  //   });
+  // }
+ 
+  console.log(getImagesRecipe('1'));
   return (
     <div>
       <Header />
