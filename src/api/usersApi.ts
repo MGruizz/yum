@@ -3,6 +3,7 @@ import axios from "axios";
 import { User, LoginFormValues } from "../features/user/userInterfaces";
 import { Recipe } from "../features/recipe/recipeInterfaces";
 import { getToken, saveToken } from "../api/authApi";
+import { AuthObject } from '../interfaces/Token/Token';
 
 export const registerUser = async (email: string, password: string) => {
   try {
@@ -23,7 +24,7 @@ export const loginUser = async (values: LoginFormValues) => {
       email: values.email,
       password: values.password,
     });
-    
+
     return response.data;
   } catch (error) {
     throw new Error('Error al iniciar sesión:' + error);
@@ -49,16 +50,27 @@ export const getRecipesByUserId = async (id: string): Promise<Recipe[]> => {
 };
 
 export const updateUserProfile = async (idUsuario: number, nombreUsuario: string, descripcion: string) => {
-  const {token} = JSON.parse(getToken() || '{}');
+  const token = getToken();
+
+  console.log(token);
   
   const response = await instance.put(
-    `/usuarios/${idUsuario}`, 
+    `/usuarios/${idUsuario}`,
     { nombreUsuario, descripcion },
     { headers: { 'Authorization': `Bearer ${token}` } }
-  );  
-  // saveToken(response.data.token);
+  );
+
+  const authObject: AuthObject = {
+    token: response.data.token,
+    user: response.data.user
+  }
+
+  console.log(authObject);
+
+  saveToken(authObject);
   return response.data;
 };
+
 export const followUser = async (id_seguidor: number, id_seguido: number) => {
   try {
     const response = await instance.post("/usuarios/follow/", {

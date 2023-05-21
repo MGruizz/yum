@@ -1,9 +1,5 @@
+import { AuthObject } from '../interfaces/Token/Token';
 import { User } from './../features/user/userInterfaces';
-
-interface AuthObject {
-    token: string;
-    user:User;
-}
 
 export const saveToken = (objecto: AuthObject) => {
     const expiresIn = 60 * 1000;
@@ -16,6 +12,7 @@ export const saveToken = (objecto: AuthObject) => {
 
 export const removeToken = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
     localStorage.removeItem('authTokenExpiration');
 };
 
