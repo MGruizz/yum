@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa";
 import Header from "../../components/Header/Header";
-import { getUserById , getRecipesByUserId} from "../../api/usersApi";
+import { getUserById , getRecipesByUserId, followUser, unfollowUser,  isFollowingUser } from "../../api/usersApi"; // Asegurate de que esta función existe en tu API
 import { User } from "../../features/user/userInterfaces";
 import { useParams } from "react-router-dom";
 import { Recipe } from "../../features/recipe/recipeInterfaces";
 import { getUserToken } from "../../api/authApi";
 import {getImagesRecipe} from "../../api/recipeApi";
+import { toast } from 'react-toastify';
 
 
 const UserProfile: React.FC = () => {
@@ -15,6 +16,7 @@ const UserProfile: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isCurrentUserProfile, setIsCurrentUserProfile] = useState<boolean>();
   //const [showModal, setShowModal] = useState(false);
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -27,6 +29,7 @@ const UserProfile: React.FC = () => {
           setPublicacionesUsuarios(recipesData);
           if (userToken) {
             setIsCurrentUserProfile(String(userToken.id) === userId);
+            setIsFollowing(await isFollowingUser(userToken.id, parseInt(userId)));
           }
         }
       } catch (error) {
@@ -36,6 +39,28 @@ const UserProfile: React.FC = () => {
   
     fetchUser();
   }, [userId]);
+
+  const handleFollow = async () => {
+    const userToken =  getUserToken();
+    if (userToken && userId) {
+      try {
+        const id_seguido = parseInt(userId);
+        if (!isFollowing) {
+          console.log('chau');
+          await followUser(userToken.id, id_seguido);
+          toast.success('¡Has seguido al usuario con éxito!');
+        } else {
+          console.log('holi');
+          await unfollowUser(userToken.id, id_seguido);
+          toast.success('¡Has dejado de seguir al usuario con éxito!');
+        }
+        setIsFollowing(await isFollowingUser(userToken.id, id_seguido));
+      } catch (error) {
+        console.error('Error al seguir/dejar de seguir al usuario', error);
+        toast.error('Hubo un error al intentar seguir/dejar de seguir al usuario. Por favor inténtalo de nuevo.');
+      }
+    }
+  }
 
   // const handleShowModal = (recipeId: string, recipeName: string, recipeDescription: string) => {
   //   setShowModal(!showModal);
@@ -77,8 +102,11 @@ const UserProfile: React.FC = () => {
               <h1 className="text-2xl font-bold text-gray-800 text-left">
                 {user?.username}
                 {!isCurrentUserProfile && isCurrentUserProfile!== undefined ? (
-                  <button className="ml-4 px-4 py-1 font-semibold text-white transition-colors duration-200 rounded-md bg-gray-400 hover:bg-gray-900 text-sm">
-                    Seguir
+                  <button 
+                    className="ml-4 px-4 py-1 font-semibold text-white transition-colors duration-200 rounded-md bg-gray-400 hover:bg-gray-900 text-sm"
+                    onClick={handleFollow}
+                  >
+                    {isFollowing ? 'Dejar de seguir' : 'Seguir'}
                   </button>
                 ) : (
                   <button className="ml-4 text-sm">

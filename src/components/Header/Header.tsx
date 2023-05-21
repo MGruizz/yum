@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = () => {
   const handleHomeClick = () => {
     navigate("/");
   };
-  const hanldeLogOutClick = () => {
+  const handleLogOutClick = () => {
     removeToken();
     setAuthenticated(false);
     navigate('/login');
@@ -128,7 +128,7 @@ const Header: React.FC<HeaderProps> = () => {
 
               <button
                 className="bg-transparent mr-2 flex gap-2 text-gray-500 hover:text-blue-900 transition duration-500"
-                onClick={hanldeLogOutClick}
+                onClick={handleLogOutClick}
               >
                 <AiOutlineLogout className="text-2xl" />
                 Cerrar sesion
@@ -213,7 +213,7 @@ const Header: React.FC<HeaderProps> = () => {
                 <div className="mt-10">
                   <button
                     className="text-xl bg-transparent ml-5 flex gap-2 text-gray-500 hover:scale-105 hover:text-blue-900 transition duration-500"
-                    onClick={hanldeLogOutClick}
+                    onClick={handleLogOutClick}
                   >
                     <AiOutlineLogout className="text-3xl" />
                     Cerrar sesión
