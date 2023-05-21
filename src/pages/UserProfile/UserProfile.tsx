@@ -8,7 +8,9 @@ import { Recipe } from "../../features/recipe/recipeInterfaces";
 import { getUserToken } from "../../api/authApi";
 import { getImagesRecipe } from "../../api/recipeApi";
 import EditProfileModal from "./EditProfileModal";
-import { updateUserProfile } from '../../api/usersApi'
+import { updateUserProfile } from '../../api/usersApi';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 
 const UserProfile: React.FC = () => {
@@ -18,6 +20,7 @@ const UserProfile: React.FC = () => {
   const [isCurrentUserProfile, setIsCurrentUserProfile] = useState<boolean>();
   const [showModal, setShowModal] = useState(false);
   //const [showModal, setShowModal] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -38,7 +41,7 @@ const UserProfile: React.FC = () => {
     };
 
     fetchUser();
-  }, [userId]);
+  }, [userId, refreshKey]);
 
   const handleShowModal = () => {
     setShowModal(true);
@@ -54,10 +57,13 @@ const UserProfile: React.FC = () => {
     if (user && id) {
       try {
         const token = await updateUserProfile(id, username, descripcion);
-
-
+        setUser(token);
+        setShowModal(false);
+        setRefreshKey((oldKey) => oldKey + 1);
+        toast.success('¡Perfil editado exitosamente!');
       } catch (error) {
         console.error("Error al actualizar el perfil del usuario", error);
+        toast.error('¡Ocurrió un error al editar el perfil!');
       }
     }
   };
