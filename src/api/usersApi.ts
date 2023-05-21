@@ -1,6 +1,8 @@
 import instance from "./axiosInstance";
+import axios from "axios";
 import { User, LoginFormValues } from "../features/user/userInterfaces";
 import { Recipe } from "../features/recipe/recipeInterfaces";
+import { getToken, saveToken } from "../api/authApi";
 
 export const registerUser = async (email: string, password: string) => {
   try {
@@ -21,6 +23,7 @@ export const loginUser = async (values: LoginFormValues) => {
       email: values.email,
       password: values.password,
     });
+    
     return response.data;
   } catch (error) {
     throw new Error('Error al iniciar sesión:' + error);
@@ -43,4 +46,16 @@ export const getRecipesByUserId = async (id: string): Promise<Recipe[]> => {
   } catch (error) {
     throw new Error('Error al obtener información del usuario');
   }
+};
+
+export const updateUserProfile = async (idUsuario: number, nombreUsuario: string, descripcion: string) => {
+  const {token} = JSON.parse(getToken() || '{}');
+  
+  const response = await instance.put(
+    `/usuarios/${idUsuario}`, 
+    { nombreUsuario, descripcion },
+    { headers: { 'Authorization': `Bearer ${token}` } }
+  );  
+  // saveToken(response.data.token);
+  return response.data;
 };
