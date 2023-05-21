@@ -76,9 +76,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
         };
         const result = await createRecipe(valoresActualizados);
         if (result) {
-            console.log('antes');
             toast.success('Receta creada con éxito!');
-            console.log('después');
             onClose();
         } else {
             toast.error('Hubo un error al crear la receta');

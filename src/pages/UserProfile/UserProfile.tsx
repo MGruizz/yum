@@ -76,11 +76,9 @@ const UserProfile: React.FC = () => {
       try {
         const id_seguido = parseInt(userId);
         if (!isFollowing) {
-          console.log('chau');
           await followUser(userToken.id, id_seguido);
           toast.success('¡Has seguido al usuario con éxito!');
         } else {
-          console.log('holi');
           await unfollowUser(userToken.id, id_seguido);
           toast.success('¡Has dejado de seguir al usuario con éxito!');
         }
