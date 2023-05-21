@@ -3,7 +3,7 @@ import { CrearRecetaProps, FormRecetasInputs } from '../../interfaces/CrearRecet
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { validationSchema } from '../../utils/validators';
-import createRecipe from '../../api/recipeApi';
+import {createRecipe} from '../../api/recipeApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import Categorias from '../Categories/Categorias';

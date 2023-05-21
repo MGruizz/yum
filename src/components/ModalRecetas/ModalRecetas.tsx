@@ -20,7 +20,6 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   const [steps, setSteps] = useState<Step[] | null>(null);
   const [ingredients, setIngredients] = useState<Ingredient[] | null>(null);
   const [comments, setComments] = useState<Comment[] | null>(null);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -45,6 +44,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
           const fetchedComments = await getCommentsByRecipeId(recipeId);
           const mappedComments = fetchedComments.map(mapDbObjectToComment);
           setComments(mappedComments);
+          console.log('Comentarios',mappedComments,'Pasos',mappedSteps,'Ingredientes',mappedIngredients);
         }
 
       } catch (error) {

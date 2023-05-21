@@ -1,4 +1,4 @@
-import { Comment, Ingredient, Recipe, Step } from "../features/recipe/recipeInterfaces";
+import { Comment, Ingredient, Recipe, RecipeFull, Step } from "../features/recipe/recipeInterfaces";
 
 export function mapDbObjectToRecipe(dbObject: any): Recipe {
     return {
@@ -37,5 +37,19 @@ export function mapDbObjectToComment(dbObject: any): Comment {
         descripcion: dbObject.descripcion,
         usuarioId: dbObject.usuario_id,
         recetaId: dbObject.receta_id,
+    };
+}
+export function mapDbObjectToRecipeFull(dbObject: any): RecipeFull {
+    return {
+        idRecipe: dbObject.id,
+        descripcion: dbObject.descripcion,
+        userId: dbObject.usuario_id,
+        fechaCreacion: dbObject.created_at,
+        fechaUpdate: dbObject.updated_at,
+        eliminado: dbObject.deleted,
+        nombre: dbObject.nombre,
+        likes: dbObject.likes,
+        views: dbObject.visitas,
+        images: dbObject.imagenes
     };
 }

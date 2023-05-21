@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Ingredient, Recipe, Step, Comment } from '../features/recipe/recipeInterfaces';
+import { Ingredient, Recipe, Step, Comment , RecipeFull} from '../features/recipe/recipeInterfaces';
 
 export const createRecipe = async (data: any) => {
   try {
@@ -72,14 +72,23 @@ export const getCommentsByRecipeId = async (id: string): Promise<Comment[]> => {
   }
 };
 
-export default createRecipe;
-
-export const getImagesRecipe = async (id: string): Promise<string[]> => {
+export const getRecipesFullByUserId = async (id: string): Promise<RecipeFull[]> => {
   try {
-    const response = (await axios.get(`http://localhost:3000/imagenes/receta/${id}`));
-    return response.data.map((row: any) => row.imagen_url);
+    const response = await axios.get(`http://localhost:3000/imagenes/receta/${id}`); // Cambia esta URL al endpoint correcto en tu backend
+    return response.data;
   } catch (error) {
     console.error(error);
     return [];
   }
 };
+
+
+// export const getImagesRecipe = async (id: string) => {
+//   try {
+//     const response = (await axios.get(`http://localhost:3000/imagenes/receta/${id}`));
+//     return response.data;
+//   } catch (error) {
+//     console.error(error);
+//     return [];
+//   }
+// };

@@ -10,6 +10,19 @@ export interface Recipe{
     views: number;
 }
 
+export interface RecipeFull{
+    idRecipe: number;
+    descripcion: string;
+    userId: number;
+    fechaCreacion: string;
+    fechaUpdate:string;
+    eliminado: boolean;
+    nombre: string;
+    likes: number;
+    views: number;
+    images: string[];
+}
+
 export interface Step{
     idStep: number;
     recetaId: number;

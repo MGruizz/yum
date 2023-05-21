@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa";
 import Header from "../../components/Header/Header";
-import { getUserById , getRecipesByUserId, followUser, unfollowUser,  isFollowingUser } from "../../api/usersApi";
+import { getUserById , followUser, unfollowUser,  isFollowingUser ,updateUserProfile} from "../../api/usersApi";
 import { User } from "../../features/user/userInterfaces";
 import { useParams } from "react-router-dom";
-import { Recipe } from "../../features/recipe/recipeInterfaces";
+import { RecipeFull} from "../../features/recipe/recipeInterfaces";
 import { getUserToken } from "../../api/authApi";
-import { getImagesRecipe } from "../../api/recipeApi";
+//import { getImagesRecipe} from "../../api/recipeApi";
 import EditProfileModal from "./EditProfileModal";
-import { updateUserProfile } from '../../api/usersApi';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
+import { getRecipesFullByUserId } from "../../api/recipeApi";
+import { mapDbObjectToRecipeFull} from "../../utils/mapper";
+import ModalRecetas from '../../components/ModalRecetas/ModalRecetas';
 
 
 const UserProfile: React.FC = () => {
-  const [publicacionesUsuarios, setPublicacionesUsuarios] = useState<Recipe[]>([]);
+  const [publicacionesUsuarios, setPublicacionesUsuarios] = useState<RecipeFull[]>([]);
   const { userId } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [isCurrentUserProfile, setIsCurrentUserProfile] = useState<boolean>();
@@ -22,7 +24,7 @@ const UserProfile: React.FC = () => {
   //const [showModal, setShowModal] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
-
+  const [recetaSeleccionada, setRecetaSeleccionada] = useState({ id: '', name: '', description: '' });
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -30,13 +32,16 @@ const UserProfile: React.FC = () => {
         if (userId) {
           const userData = await getUserById(userId);
           setUser(userData);
-          const recipesData = await getRecipesByUserId(userId);
-          setPublicacionesUsuarios(recipesData);
+
+          const recipesData = await getRecipesFullByUserId(userId);   
+          const mappearRecipe = recipesData.map(mapDbObjectToRecipeFull); 
+          setPublicacionesUsuarios(mappearRecipe);   
           if (userToken) {
             setIsCurrentUserProfile(String(userToken.id) === userId);
             setIsFollowing(await isFollowingUser(userToken.id, parseInt(userId)));
           }
         }
+        
       } catch (error) {
         console.error("Error al cargar la información del usuario");
       }
@@ -90,16 +95,16 @@ const UserProfile: React.FC = () => {
     }
   }
 
-  // const handleShowModal = (recipeId: string, recipeName: string, recipeDescription: string) => {
-  //   setShowModal(!showModal);
-  //   setReceta({ 
-  //        id: recipeId,
-  //        name: recipeName,
-  //        description: recipeDescription
-  //   });
-  // }
+  const handleShowModalRecipe = (recipeId: string, recipeName: string, recipeDescription: string) => {
+    setShowModal(!showModal);
+    setRecetaSeleccionada({ 
+             id: recipeId,
+             name: recipeName,
+             description: recipeDescription
+        });
+  }
 
-  console.log(getImagesRecipe('1'));
+  
   return (
     <div>
       <Header />
@@ -160,16 +165,27 @@ const UserProfile: React.FC = () => {
           <div className="border-b border-gray-300 my-4" />
           {/* Grid Publicaciones */}
           <h1 className="text-2xl font-bold text-gray-800">Publicaciones</h1>
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center items-center">
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-4 justify-items-center items-center">
             {publicacionesUsuarios.map((recipe, index) => (
-              <div key={index} className="overflow-hidden rounded-md">
-                <img
+              <div key={index} className="overflow-hidden rounded-md w-64 h-64 relative">
+                {recipe.images[0] !== undefined ? (
+                  <img
+                  src={recipe.images[0]}
+                  alt={`Post ${index + 1}`}
+                  className="w-full h-full   object-cover transform hover:scale-110 transition-all duration-200"
+                  onClick={() => handleShowModalRecipe(String(recipe.idRecipe),recipe.nombre,recipe.descripcion)}
+                  />
+                 
+                ): (
+                  <img
                   src={'https://via.placeholder.com/350'}
                   alt={`Post ${index + 1}`}
-                  className="w-full object-cover transform hover:scale-110 transition-all duration-200"
-                />
+                  className="w-full h-full  object-cover transform hover:scale-110 transition-all duration-200"
+                  />
+                )}
               </div>
             ))}
+            {showModal && <ModalRecetas tituloReceta={recetaSeleccionada.name} isVisible={showModal} onClose={() => setShowModal(false)} recipeId={recetaSeleccionada.id} />}
           </div>
         </div>
       </div>
