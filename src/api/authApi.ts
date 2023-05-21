@@ -1,9 +1,16 @@
 import { User } from './../features/user/userInterfaces';
 
-export const saveToken = (token: string) => {
+interface AuthObject {
+    token: string;
+    user:User;
+}
+
+export const saveToken = (objecto: AuthObject) => {
     const expiresIn = 60 * 1000;
     const expirationTime = new Date().getTime() + expiresIn;
-    localStorage.setItem('authToken', JSON.stringify(token));
+
+    localStorage.setItem('authToken', objecto.token);
+    localStorage.setItem('user', JSON.stringify(objecto.user));
     localStorage.setItem('authTokenExpiration', expirationTime.toString());
 }
 
@@ -31,10 +38,10 @@ export const getToken = (): string | null => {
 };
 
 export const getUserToken = ():User|null => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        return null;
+    const item = localStorage.getItem('user');
+    if (item) {
+        const user: User = JSON.parse(item);
+        return user;
     }
-    const user: User =  JSON.parse(token).user;
-    return user;
+    return null;
 }
