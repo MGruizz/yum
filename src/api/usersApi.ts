@@ -52,8 +52,6 @@ export const getRecipesByUserId = async (id: string): Promise<Recipe[]> => {
 export const updateUserProfile = async (idUsuario: number, nombreUsuario: string, descripcion: string) => {
   const token = getToken();
 
-  console.log(token);
-  
   const response = await instance.put(
     `/usuarios/${idUsuario}`,
     { nombreUsuario, descripcion },
@@ -64,8 +62,6 @@ export const updateUserProfile = async (idUsuario: number, nombreUsuario: string
     token: response.data.token,
     user: response.data.user
   }
-
-  console.log(authObject);
 
   saveToken(authObject);
   return response.data;

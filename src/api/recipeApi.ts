@@ -38,7 +38,6 @@ export const getCategories = async () => {
 
 export const getRecipeById = async (id: string): Promise<Recipe> => {
   try {
-    console.log("id?" + id + "wat japen")
     const response = await axios.get<Recipe>(`http://localhost:3000/receta/${id}`);
     return response.data;
   } catch (error) {

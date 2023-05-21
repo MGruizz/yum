@@ -63,8 +63,6 @@ const UserProfile: React.FC = () => {
     const { id } = getUserToken()!
     if (user && id) {
 
-      console.log("hola??");
-
       try {
         const token = await updateUserProfile(id, username, descripcion);
         setUser(token);
