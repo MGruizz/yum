@@ -21,7 +21,7 @@ const UserProfile: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isCurrentUserProfile, setIsCurrentUserProfile] = useState<boolean>();
   const [showModal, setShowModal] = useState(false);
-  //const [showModal, setShowModal] = useState(false);
+  const [showModalPublicacion, setShowModalPublicacion] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [recetaSeleccionada, setRecetaSeleccionada] = useState({ id: '', name: '', description: '' });
@@ -97,7 +97,7 @@ const UserProfile: React.FC = () => {
   }
 
   const handleShowModalRecipe = (recipeId: string, recipeName: string, recipeDescription: string) => {
-    setShowModal(!showModal);
+    setShowModalPublicacion(!showModalPublicacion);
     setRecetaSeleccionada({ 
              id: recipeId,
              name: recipeName,
@@ -186,7 +186,7 @@ const UserProfile: React.FC = () => {
                 )}
               </div>
             ))}
-            {showModal && <ModalRecetas tituloReceta={recetaSeleccionada.name} isVisible={showModal} onClose={() => setShowModal(false)} recipeId={recetaSeleccionada.id} />}
+            {showModalPublicacion && <ModalRecetas tituloReceta={recetaSeleccionada.name} isVisible={showModalPublicacion} onClose={() => setShowModalPublicacion(false)} recipeId={recetaSeleccionada.id} />}
           </div>
         </div>
       </div>

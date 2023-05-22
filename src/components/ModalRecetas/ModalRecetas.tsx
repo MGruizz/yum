@@ -44,7 +44,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
           const fetchedComments = await getCommentsByRecipeId(recipeId);
           const mappedComments = fetchedComments.map(mapDbObjectToComment);
           setComments(mappedComments);
-          console.log('Comentarios',mappedComments,'Pasos',mappedSteps,'Ingredientes',mappedIngredients);
+          
         }
 
       } catch (error) {
