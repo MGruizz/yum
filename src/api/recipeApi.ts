@@ -82,6 +82,20 @@ export const getRecipesFullByUserId = async (id: string): Promise<RecipeFull[]> 
   }
 };
 
+export const likesByRecipeId = async (receta_Id: number) => {
+
+  try {
+    const response = await axios.get("/recetas/likes", {
+      params: {
+        recetaId: receta_Id
+      },
+    });
+
+    return response.data.cantidadLikes;
+  } catch (error) {
+    throw new Error('Error al retornar cantidad de likes:' + error);
+  }
+}
 
 // export const getImagesRecipe = async (id: string) => {
 //   try {

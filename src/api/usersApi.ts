@@ -103,3 +103,46 @@ export const isFollowingUser = async (id_seguidor: number, id_seguido: number) =
     throw new Error('Error al comprobar petición:' + error);
   }
 }
+
+export const likeRecipe = async (usuario_id: number, receta_Id: string) => {
+  console.log("likeRecipe")
+  try {
+    const response = await instance.post("/usuarios/receta/like/", {
+      usuarioId: usuario_id,
+      recetaId: receta_Id,
+    });
+    console.log(response)
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al dar like a receta:' + error);
+  }
+}
+
+export const unlikeRecipe = async (usuario_id: number, receta_Id: string) => {
+  console.log("unlikeRecipe")
+  try {
+    const response = await instance.post("/usuarios/receta/unlike/", {
+      usuarioId: usuario_id,
+      recetaId: receta_Id,
+    });
+    console.log(response)
+    return response.data;
+  } catch (error) {
+    throw new Error('Error dar unlike a receta:' + error);
+  }
+}
+
+export const isLikingRecipe = async (usuario_id: number, receta_Id: number) => {
+  console.log("isLikingRecipe");
+  console.log(usuario_id);
+  console.log(receta_Id);
+  try {
+    const response = await instance.post("/usuarios/receta/isliked", {
+      usuarioId: usuario_id,
+      recetaId: receta_Id,
+    });
+    return response.data.isLiked;
+  } catch (error) {
+    throw new Error('Error al verificar like de receta:' + error);
+  }
+}

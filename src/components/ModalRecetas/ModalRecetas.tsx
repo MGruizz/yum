@@ -1,88 +1,110 @@
 import React, { useEffect, useState } from "react";
 import { ModalRecetasProps } from "../../interfaces/ModalRecetasProps/ModalRecetasProps";
 import { CSSTransition } from "react-transition-group";
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
 import Comentarios from "../Comentarios/Comentarios";
 import { getCommentsByRecipeId, getIngredientsByRecipeId, getRecipeById, getStepsByRecipeId } from "../../api/recipeApi";
-import { getUserById } from "../../api/usersApi";
+import { getUserById, isLikingRecipe, likeRecipe, unlikeRecipe } from "../../api/usersApi";
 import { User } from "../../features/user/userInterfaces";
 import { Comment, Ingredient, Recipe, Step } from "../../features/recipe/recipeInterfaces";
 import { mapDbObjectToComment, mapDbObjectToIngredient, mapDbObjectToRecipe, mapDbObjectToSteps } from "../../utils/mapper";
+import { getUserToken } from "../../api/authApi";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
-const ModalRecetas: React.FC<ModalRecetasProps> = ({
-  isVisible,
-  onClose,
-  recipeId
-}) => {
-
+const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, recipeId }) => {
+  const [showPasos, setShowPasos] = useState(false);
+  const [showIngredientes, setShowIngredientes] = useState(false);
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [steps, setSteps] = useState<Step[] | null>(null);
   const [ingredients, setIngredients] = useState<Ingredient[] | null>(null);
   const [comments, setComments] = useState<Comment[] | null>(null);
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const userId = getUserToken() != null ? getUserToken()?.id : null;
+
   useEffect(() => {
     const fetchData = async () => {
+
+      setIsLoading(true);
+
       try {
-        const fetchedRecipe = await getRecipeById(recipeId);
-        const recipe: Recipe = mapDbObjectToRecipe(fetchedRecipe);
-        setRecipe(recipe);
-
-        if (recipe.userId) {
-          const fetchedUser = await getUserById(recipe.userId.toString());
-          setUser(fetchedUser);
-        }
-
         if (recipeId) {
+          if (userId) {
+            // Verificar si el usuario logueado ya dió like a la receta
+            setIsLiked(await isLikingRecipe(userId, parseInt(recipeId)));
+          }
+
+          // Obtener receta
+          const fetchedRecipe = await getRecipeById(recipeId);
+          const recipe: Recipe = mapDbObjectToRecipe(fetchedRecipe);
+          setRecipe(recipe);
+
+          if (recipe.userId) {
+            // Obtener usuario propetario de la receta
+            const fetchedUser = await getUserById(recipe.userId.toString());
+            setUser(fetchedUser);
+          }
+
+          // Obtener pasos
           const fetchedSteps = await getStepsByRecipeId(recipeId);
           const mappedSteps = fetchedSteps.map(mapDbObjectToSteps);
           setSteps(mappedSteps);
 
+          // Obtener ingredientes
           const fetchedIngredients = await getIngredientsByRecipeId(recipeId);
           const mappedIngredients = fetchedIngredients.map(mapDbObjectToIngredient);
           setIngredients(mappedIngredients);
 
+          // Obtener comentarios
           const fetchedComments = await getCommentsByRecipeId(recipeId);
           const mappedComments = fetchedComments.map(mapDbObjectToComment);
           setComments(mappedComments);
-          
         }
-
       } catch (error) {
         console.error(error);
       }
+
+      setIsLoading(false);
     };
 
     fetchData();
   }, [recipeId]);
 
+  const handleLike = async () => {
+    try {
+      if (userId) {
+        await likeRecipe(userId, recipeId);
+        setIsLiked(true);
+      }
 
-  const [showPasos, setShowPasos] = useState(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleUnlike = async () => {
+    try {
+      if (userId) {
+        await unlikeRecipe(userId, recipeId);
+        setIsLiked(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const togglePasos = () => {
     setShowPasos(!showPasos);
   };
-  const [showIngredientes, setShowIngredientes] = useState(false);
-
+  
   const toggleIngredientes = () => {
     setShowIngredientes(!showIngredientes);
   };
 
-  const customSizeLg = {
-    width: 400,
-    height: 600,
-  };
-  const customSizeMd = {
-    width: 200,
-    height: 300,
-  };
-  const customSizeSm = {
-    width: 250,
-    height: 750,
-  };
-
   return (
     <div>
-      {isVisible && (
+      {isVisible && !isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center">
           <div className="w-10/12 h-[30rem] sm:w-10/12 md:w-9/12 lg:w-8/12 xl:w-8/12 relative">
             <button
@@ -111,10 +133,17 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                       />
                       <p className="text-xl font-semibold">{user?.username}</p>
                     </div>
-                    {/* Titulo */}
-                    <h2 className="text-3xl font-bold text-left mb-3">
-                      {recipe?.nombre}
-                    </h2>
+                    <div className="flex justify-between items-center mb-3">
+                      <h2 className="text-3xl font-bold text-left">
+                        {recipe?.nombre}
+                      </h2>
+                      <button
+                        onClick={isLiked ? handleUnlike : handleLike}
+                        className="text-xl font-normal rounded-full px-2"
+                      >
+                        {isLiked ? <AiFillHeart /> : <AiOutlineHeart />}
+                      </button>
+                    </div>
                     {/* Descricion */}
                     <p className="text-lg text-left mb-7">
                       {recipe?.descripcion}
@@ -180,7 +209,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                         unmountOnExit
                       >
                         <div className="mt-2">
-                        {ingredients?.map((ingredients) => (
+                          {ingredients?.map((ingredients) => (
                             <p key={ingredients.idIngredient} className="text-lg text-left bg-slate-300 rounded-full px-5 mb-2">
                               {ingredients.nombre}
                             </p>
@@ -209,7 +238,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                     `}</style>
                     </div>
                     {/* Comentarios */}
-                    {comments ? <Comentarios comments={comments}/> : null}
+                    {comments ? <Comentarios comments={comments} /> : null}
                   </div>
                 </div>
               </div>
