@@ -21,7 +21,6 @@ const FrontPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header/>
       <main className="flex-grow bg-gray-100">
         <img src="https://via.placeholder.com/720x350" alt="" className="w-full h-96 object-cover" />
         <MensajesInicio></MensajesInicio>

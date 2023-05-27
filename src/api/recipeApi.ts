@@ -97,6 +97,20 @@ export const likesByRecipeId = async (receta_Id: number) => {
   }
 }
 
+export const searchRecipe = async (search: string) => {
+  const data = {
+    palabraclave : search
+  }
+  console.log(data);
+  
+  try {
+    const response = await axios.post("http://localhost:3000/recetas/buscar",data);    
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // export const getImagesRecipe = async (id: string) => {
 //   try {
 //     const response = (await axios.get(`http://localhost:3000/imagenes/receta/${id}`));

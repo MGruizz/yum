@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import RecipeCard from '../../components/RecipeCard/RecipeCard';
 import ModalRecetas from '../../components/ModalRecetas/ModalRecetas';
 import { getPopularRecipes } from '../../api/recipeApi';
+import { PopularRecipe } from '../../interfaces/Recipe/Recipe'
 
 const RecetasPopulares = () => {
     const [recetasPopulares, setRecetasPopulares] = useState<PopularRecipe[]>([]);

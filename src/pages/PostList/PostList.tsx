@@ -1,49 +1,22 @@
 import React from "react";
+import useSearch from "../../hooks/useSearch";
 
 const PostList = () => {
-    const recetas = [
-        {
-            id: 1,
-            nombre: "Receta 1",
-            descripcion: "Breve descripción de la Receta 1",
-            imagen: "https://via.placeholder.com/150",
-        },
-        {
-            id: 2,
-            nombre: "Receta 2",
-            descripcion: "Breve descripción de la Receta 2",
-            imagen: "https://via.placeholder.com/150",
-        },
-        {
-            id: 3,
-            nombre: "Receta 3",
-            descripcion: "Breve descripción de la Receta 3",
-            imagen: "https://via.placeholder.com/150",
-        },
-        {
-            id: 4,
-            nombre: "Receta 4",
-            descripcion: "Breve descripción de la Receta 4",
-            imagen: "https://via.placeholder.com/150",
-        },
-        {
-            id: 5,
-            nombre: "Receta 5",
-            descripcion: "Breve descripción de la Receta 5",
-            imagen: "https://via.placeholder.com/150",
-        },
-    ];
+
+    const { searchResults } = useSearch();
+    console.log('resultados busqueda',searchResults);
+
 
     return (
         <div className="max-w-screen-2xl mx-auto">
-            {recetas.map((receta) => (
+            {searchResults.map((receta) => (
                 <div key={receta.id}>
                     <div
                         className="flex items-stretch my-8 mx-auto w-3/4 bg-white shadow-md rounded-md p-0 cursor-pointer overflow-hidden"
                     >
                         <div className="w-2/5">
                             <img
-                                src={receta.imagen}
+                                src={'https://via.placeholder.com/150'}
                                 alt={`Imagen de ${receta.nombre}`}
                                 className="w-full h-full object-cover"
                             />
