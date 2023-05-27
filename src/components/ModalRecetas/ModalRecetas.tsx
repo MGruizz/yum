@@ -22,6 +22,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, recipeI
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const userId = getUserToken() != null ? getUserToken()?.id : null;
+  const [userLogged, setUserLogged] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +33,8 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, recipeI
         if (recipeId) {
           if (userId) {
             // Verificar si el usuario logueado ya dió like a la receta
+            const userData = await getUserById(String(userId));
+            setUserLogged(userData);
             setIsLiked(await isLikingRecipe(userId, parseInt(recipeId)));
           }
 
@@ -83,6 +86,8 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, recipeI
     }
   };
 
+
+
   const handleUnlike = async () => {
     try {
       if (userId) {
@@ -124,14 +129,15 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, recipeI
                   {/* Nuevo contenedor con scroll */}
                   <div className="mt-5 pr-5 pl-5 pb-5 h-[30rem] overflow-y-scroll">
                     {/* User */}
-                    <div className="flex items-center mb-5">
+                    <div className="flex items-center ">
                       <img
                         // src="https://via.placeholder.com/150"
                         src={user?.foto_perfil}
                         alt="Nombre del usuario"
                         className="w-12 h-12 rounded-full mr-3"
+                        
                       />
-                      <p className="text-xl font-semibold">{user?.username}</p>
+                      <a className="text-xl font-semibold" href={`/profile/${user?.id}`}>{user?.username}</a>
                     </div>
                     <div className="flex justify-between items-center mb-3">
                       <h2 className="text-3xl font-bold text-left">
@@ -238,7 +244,10 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, recipeI
                     `}</style>
                     </div>
                     {/* Comentarios */}
-                    {comments ? <Comentarios comments={comments} /> : null}
+                    {userLogged != null && recipe!=null && comments ? (
+                      <Comentarios comments={comments} usuarioLogeado={userLogged} idReceta={String(recipe?.idRecipe)} />
+                    ) : null}
+                    
                   </div>
                 </div>
               </div>

@@ -133,9 +133,7 @@ export const unlikeRecipe = async (usuario_id: number, receta_Id: string) => {
 }
 
 export const isLikingRecipe = async (usuario_id: number, receta_Id: number) => {
-  console.log("isLikingRecipe");
-  console.log(usuario_id);
-  console.log(receta_Id);
+
   try {
     const response = await instance.post("/usuarios/receta/isliked", {
       usuarioId: usuario_id,
@@ -146,3 +144,21 @@ export const isLikingRecipe = async (usuario_id: number, receta_Id: number) => {
     throw new Error('Error al verificar like de receta:' + error);
   }
 }
+
+export const addComment = async (descripcion: string, idUsuario: string, idReceta:string) => {
+  try {
+    const token = localStorage.getItem('authToken');
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const response = await instance.post("/comentarios/", {
+      descripcion: descripcion,
+      usuario_id: idUsuario,
+      receta_id: idReceta,
+    },{headers});
+    return response.data
+  } catch (error) {
+    throw new Error('Error al comentar' + error);
+  }
+
+};
