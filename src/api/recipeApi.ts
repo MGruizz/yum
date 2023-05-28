@@ -101,7 +101,6 @@ export const searchRecipe = async (search: string) => {
   const data = {
     palabraclave : search
   }
-  console.log(data);
   
   try {
     const response = await axios.post("http://localhost:3000/recetas/buscar",data);    

@@ -6,6 +6,7 @@ interface SearchContextProps {
     setSearchResults: (results: Recipe[]) => void;
 }
 
+
 const SearchContext = React.createContext<SearchContextProps | undefined>(undefined);
 
 export const SearchProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
