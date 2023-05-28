@@ -1,10 +1,12 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import useSearch from "../../hooks/useSearch";
 import ModalRecetas from '../../components/ModalRecetas/ModalRecetas';
 
 const PostList = () => {
     const [showModal, setShowModal] = useState(false);
     const [receta, setReceta] = useState({ id: '', name: '', description: '' });
+    const [itemsToShow, setItemsToShow] = useState(5);
+    const [isMax, setIsMax] = useState(false);
 
     const { searchResults } = useSearch();
 
@@ -17,10 +19,26 @@ const PostList = () => {
         });
     }
 
+    const loadMore = () => {
+        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
+        if (itemsToShow >= searchResults.length) {
+            setIsMax(true);
+            return;
+        }
+        setItemsToShow(itemsToShow + 10); // cargar 10 items más cuando se llega al final de la página
+    }
+
+    useEffect(() => {
+        window.addEventListener('scroll', loadMore);
+        return () => window.removeEventListener('scroll', loadMore);
+    }, [itemsToShow, isMax]);
+
+    console.log(searchResults);
+    
     return (
         <Fragment>
             <div className="max-w-screen-2xl mx-auto">
-                {searchResults && searchResults.map((receta) => (
+                {searchResults.slice(0, itemsToShow).map((receta) => (
                     <div key={receta.id}>
                         <div
                             className="flex items-stretch my-8 mx-auto w-3/4 bg-white shadow-md rounded-md p-0 cursor-pointer overflow-hidden"
@@ -51,6 +69,7 @@ const PostList = () => {
                     />
                 }
             </div>
+            {!isMax && <div className="text-center">Loading...</div>}
         </Fragment>
     );
 };
