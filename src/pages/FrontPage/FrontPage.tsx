@@ -19,11 +19,16 @@ const FrontPage = () => {
     navigate('/register');
   };
 
+  const customSize = {
+    height: 350,
+    //https://via.placeholder.com/720x350
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header/>
       <main className="flex-grow bg-gray-100">
-        <img src="https://via.placeholder.com/720x350" alt="" className="w-full h-96 object-cover" />
+        <img src="images/frontpage/banner_inicio_manzanas.jpeg" alt="" style={customSize} className="w-full object-cover" />
         <MensajesInicio></MensajesInicio>
         <CategoriasPopulares></CategoriasPopulares>
         <BannerSeccion></BannerSeccion>
