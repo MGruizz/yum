@@ -1,7 +1,8 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { HeaderProps } from "../../interfaces/Header/HeaderProps";
 import { Recipe } from "../../interfaces/Recipe/Recipe"
 import useSearch from "../../hooks/useSearch";
+import { User } from "../../features/user/userInterfaces";
 
 import {
   AiOutlineUser,
@@ -31,6 +32,23 @@ const Header: React.FC<HeaderProps> = () => {
   const { setSearchResults } = useSearch();
   const [resultadoBusqueda, setResultadoBusqueda] = useState<Recipe[]>([]);
   const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userToken = getUserToken();
+        setUser(userToken);
+        
+        
+      } catch (error) {
+        console.error("Error al cargar la información del usuario");
+      }
+    };
+
+    fetchUser();
+  }, []);
+
 
   const closeSidebar = () => {
     setShowSidebar(false);
@@ -114,11 +132,11 @@ const Header: React.FC<HeaderProps> = () => {
                 <AiOutlineHome className="text-2xl 2xl:text-3xl" />
               </button>
             </div>
-            <div className="px-4 hidden lg:block">
+            {user && <div className="px-4 hidden lg:block">
               <button className="py-2" onClick={handleRecipeClick}>
                 <AiOutlinePlusCircle className="text-2xl 2xl:text-3xl" />
               </button>
-            </div>
+            </div>}
             {/* Barra de busqueda */}
             <div className="flex items-center justify-between bg-gray-100 rounded-lg border-2 border-slate-400 w-full">
               <input

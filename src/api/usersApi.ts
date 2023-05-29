@@ -5,9 +5,10 @@ import { Recipe } from "../features/recipe/recipeInterfaces";
 import { getToken, saveToken } from "../api/authApi";
 import { AuthObject } from '../interfaces/Token/Token';
 
-export const registerUser = async (email: string, password: string) => {
+export const registerUser = async (username:string,email: string, password: string) => {
   try {
-    const response = await instance.post("/auth/register", {
+    const response = await instance.post("/usuarios/", {
+      username,
       email,
       password,
     });

@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import useSearch from "../../hooks/useSearch";
 import ModalRecetas from '../../components/ModalRecetas/ModalRecetas';
+import Header from '../../components/Header/Header';
 
 const PostList = () => {
     const [showModal, setShowModal] = useState(false);
@@ -36,7 +37,9 @@ const PostList = () => {
     console.log(searchResults);
     
     return (
+        
         <Fragment>
+            <Header></Header>
             <div className="max-w-screen-2xl mx-auto">
                 {searchResults.slice(0, itemsToShow).map((receta) => (
                     <div key={receta.id}>

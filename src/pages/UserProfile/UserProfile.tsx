@@ -108,6 +108,7 @@ const UserProfile: React.FC = () => {
   
   return (
     <div>
+      <Header></Header>
       <div className="min-h-screen bg-gray-200">
         <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 bg-white shadow-lg">
 

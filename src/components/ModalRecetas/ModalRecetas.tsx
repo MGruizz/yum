@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ModalRecetasProps } from "../../interfaces/ModalRecetasProps/ModalRecetasProps";
 import { CSSTransition } from "react-transition-group";
 import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
@@ -10,6 +10,9 @@ import { Comment, Ingredient, Recipe, Step } from "../../features/recipe/recipeI
 import { mapDbObjectToComment, mapDbObjectToIngredient, mapDbObjectToRecipe, mapDbObjectToSteps } from "../../utils/mapper";
 import { getUserToken } from "../../api/authApi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import { ButtonWithMenuProps } from "../../interfaces/ButtonWithMenuProps/ButtonWithMenuProps";
 
 const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, recipeId }) => {
   const [showPasos, setShowPasos] = useState(false);
@@ -23,6 +26,10 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, recipeI
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const userId = getUserToken() != null ? getUserToken()?.id : null;
   const [userLogged, setUserLogged] = useState<User | null>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const menuRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,16 +109,75 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, recipeI
   const togglePasos = () => {
     setShowPasos(!showPasos);
   };
-  
+
   const toggleIngredientes = () => {
     setShowIngredientes(!showIngredientes);
   };
 
+  const handleButtonClick = () => {
+    setIsOpen(!isOpen);
+  }
+
+  const handleMenuClick = (action: string) => {
+    setIsOpen(false);
+    if (action === 'Editar receta') handleEditRecipe();
+    if (action === 'Eliminar receta') handleDeleteRecipe();
+  }
+
+  const handleEditRecipe = () => {
+    // Abre el modal para editar la receta.
+  }
+
+  const handleDeleteRecipe = () => {
+    // Muestra un popup para confirmar la eliminación de la receta.
+  }
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleClickOutsideModal = (e: MouseEvent) => {
+    const target = e.target as HTMLDivElement;
+    if (target && target.id === 'wrapper') {
+      onClose();
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("mousedown", handleClickOutsideModal as EventListener);
+    return () => {
+      window.removeEventListener("mousedown", handleClickOutsideModal as EventListener);
+    };
+  }, []);
+
   return (
     <div>
       {isVisible && !isLoading && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center">
+        <div id="wrapper" ref={modalRef} className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center">
           <div className="w-10/12 h-[30rem] sm:w-10/12 md:w-9/12 lg:w-8/12 xl:w-8/12 relative">
+            <button
+              className="bg-blue-500 text-white text-xl font-normal rounded-full px-3 right-10 top-2 absolute"
+              onClick={() => handleButtonClick()}
+            >
+              <FontAwesomeIcon icon={faEllipsisVertical} />
+            </button>
+            {isOpen && (
+              <div ref={menuRef} className="origin-top-right absolute right-20 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
+                <div className="py-1" role="none">
+                  <a onClick={() => handleMenuClick('Editar receta')} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem">Editar receta</a>
+                  <a onClick={() => handleMenuClick('Eliminar receta')} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem">Eliminar receta</a>
+                </div>
+              </div>
+            )}
             <button
               className="bg-red-500 text-white text-xl font-normal rounded-full px-2 absolute top-2 right-2"
               onClick={() => onClose()}
@@ -135,7 +201,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, recipeI
                         src={user?.foto_perfil}
                         alt="Nombre del usuario"
                         className="w-12 h-12 rounded-full mr-3"
-                        
+
                       />
                       <a className="text-xl font-semibold" href={`/profile/${user?.id}`}>{user?.username}</a>
                     </div>
@@ -244,10 +310,10 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({ isVisible, onClose, recipeI
                     `}</style>
                     </div>
                     {/* Comentarios */}
-                    {userLogged != null && recipe!=null && comments ? (
+                    {userLogged != null && recipe != null && comments ? (
                       <Comentarios comments={comments} usuarioLogeado={userLogged} idReceta={String(recipe?.idRecipe)} />
                     ) : null}
-                    
+
                   </div>
                 </div>
               </div>

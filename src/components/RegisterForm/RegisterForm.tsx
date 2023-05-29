@@ -11,6 +11,7 @@ const RegisterForm: React.FC<RegisterFormProps> = () => {
 
     const formik = useFormik({
         initialValues: {
+            username: '',
             email: '',
             password: '',
             confirmPassword: '',
@@ -18,9 +19,9 @@ const RegisterForm: React.FC<RegisterFormProps> = () => {
         validationSchema: RegisterValidate,
         onSubmit: async (values) => {
             try {
-                const response = await registerUser(values.email, values.password);
+                const response = await registerUser(values.username,values.email, values.password);
                 console.log('Usuario registrado con éxito:', response);
-                navigate('/');
+                navigate('/login');
               } catch (error) {
                 console.error('Error al registrar el usuario:', error);
               }
@@ -29,6 +30,19 @@ const RegisterForm: React.FC<RegisterFormProps> = () => {
 
     return (
         <form onSubmit={formik.handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+                <label htmlFor="username" className="block text-sm font-semibold text-gray-700">Nombre de usuario</label>
+                <input
+                    id="username"
+                    type="username"
+                    placeholder="Nombre de usuario"
+                    className="w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                    {...formik.getFieldProps('username')}
+                />
+                {formik.touched.username && formik.errors.username ? (
+                    <div className="text-red-500 text-xs">{formik.errors.username}</div>
+                ) : null}
+            </div>
             <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-semibold text-gray-700">Correo electrónico</label>
                 <input

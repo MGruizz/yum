@@ -26,6 +26,7 @@ const FrontPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Header></Header>
       <main className="flex-grow bg-gray-100">
         <img src="images/frontpage/banner_inicio_manzanas.jpeg" alt="" style={customSize} className="w-full object-cover" />
         <MensajesInicio></MensajesInicio>
@@ -33,7 +34,7 @@ const FrontPage = () => {
         <BannerSeccion></BannerSeccion>
         <RecetasPopulares></RecetasPopulares>
       </main>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

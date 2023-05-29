@@ -13,7 +13,6 @@ const AppRouter: React.FC = () => {
   return (
     <Router>
       <SearchProvider>
-        <Header></Header>
         <Routes>
           <Route path="/search" element={<PostList />} />
 
