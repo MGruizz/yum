@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaPen } from "react-icons/fa";
 import Header from "../../components/Header/Header";
-import { getUserById , followUser, unfollowUser,  isFollowingUser ,updateUserProfile} from "../../api/usersApi";
+import { getUserById, followUser, unfollowUser, isFollowingUser, updateUserProfile } from "../../api/usersApi";
 import { User } from "../../features/user/userInterfaces";
 import { useParams } from "react-router-dom";
-import { RecipeFull} from "../../features/recipe/recipeInterfaces";
+import { RecipeFull } from "../../features/recipe/recipeInterfaces";
 import { getUserToken } from "../../api/authApi";
 //import { getImagesRecipe} from "../../api/recipeApi";
 import EditProfileModal from "./EditProfileModal";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import { getRecipesFullByUserId } from "../../api/recipeApi";
-import { mapDbObjectToRecipeFull} from "../../utils/mapper";
+import { mapDbObjectToRecipeFull } from "../../utils/mapper";
 import ModalRecetas from '../../components/ModalRecetas/ModalRecetas';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 
 
 const UserProfile: React.FC = () => {
@@ -25,6 +27,10 @@ const UserProfile: React.FC = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [recetaSeleccionada, setRecetaSeleccionada] = useState({ id: '', name: '', description: '' });
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const menuRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -33,15 +39,15 @@ const UserProfile: React.FC = () => {
           const userData = await getUserById(userId);
           setUser(userData);
 
-          const recipesData = await getRecipesFullByUserId(userId);   
-          const mappearRecipe = recipesData.map(mapDbObjectToRecipeFull); 
-          setPublicacionesUsuarios(mappearRecipe);   
+          const recipesData = await getRecipesFullByUserId(userId);
+          const mappearRecipe = recipesData.map(mapDbObjectToRecipeFull);
+          setPublicacionesUsuarios(mappearRecipe);
           if (userToken) {
             setIsCurrentUserProfile(String(userToken.id) === userId);
             setIsFollowing(await isFollowingUser(userToken.id, parseInt(userId)));
           }
         }
-        
+
       } catch (error) {
         console.error("Error al cargar la información del usuario");
       }
@@ -77,7 +83,7 @@ const UserProfile: React.FC = () => {
   };
 
   const handleFollow = async () => {
-    const userToken =  getUserToken();
+    const userToken = getUserToken();
     if (userToken && userId) {
       try {
         const id_seguido = parseInt(userId);
@@ -98,14 +104,23 @@ const UserProfile: React.FC = () => {
 
   const handleShowModalRecipe = (recipeId: string, recipeName: string, recipeDescription: string) => {
     setShowModalPublicacion(!showModalPublicacion);
-    setRecetaSeleccionada({ 
-             id: recipeId,
-             name: recipeName,
-             description: recipeDescription
-        });
+    setRecetaSeleccionada({
+      id: recipeId,
+      name: recipeName,
+      description: recipeDescription
+    });
   }
 
-  
+
+  const handleButtonClick = () => {
+    setIsOpen(!isOpen);
+  }
+
+  const handleMenuClick = (action: string) => {
+    setIsOpen(false);
+    // hiddeProfile(user.id);
+  }
+
   return (
     <div>
       <Header></Header>
@@ -135,8 +150,8 @@ const UserProfile: React.FC = () => {
             <div className="col-span-1 md:col-span-2">
               <h1 className="text-2xl font-bold text-gray-800 text-left flex items-center">
                 {user?.username}
-                {!isCurrentUserProfile && isCurrentUserProfile!== undefined ? (
-                  <button 
+                {!isCurrentUserProfile && isCurrentUserProfile !== undefined ? (
+                  <button
                     className="ml-4 px-4 py-1 font-semibold text-white transition-colors duration-200 rounded-md bg-gray-400 hover:bg-gray-900 text-sm"
                     onClick={handleFollow}
                   >
@@ -155,7 +170,21 @@ const UserProfile: React.FC = () => {
                     />
                   </div>
                 )}
+                <button
+                  className="bg-gray-400 hover:bg-gray-900  text-white text-xl font-normal rounded-full px-3 mx-5"
+                  onClick={() => handleButtonClick()}
+                >
+                  <FontAwesomeIcon icon={faEllipsisVertical} />
+                </button>
+                {isOpen && (
+                  <div ref={menuRef} className="origin-top-right right-20 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
+                    <div className="py-1" role="none">
+                      <a onClick={() => handleMenuClick('Reportar perfil')} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem">Reportar perfil</a>
+                    </div>
+                  </div>
+                )}
               </h1>
+
             </div>
             {/* Grid Descripcion */}
             <div className="col-span-1 md:col-span-2 row-span-2">
@@ -171,17 +200,17 @@ const UserProfile: React.FC = () => {
               <div key={index} className="overflow-hidden rounded-md w-64 h-64 relative">
                 {recipe.images[0] !== undefined ? (
                   <img
-                  src={recipe.images[0]}
-                  alt={`Post ${index + 1}`}
-                  className="w-full h-full   object-cover transform hover:scale-110 transition-all duration-200"
-                  onClick={() => handleShowModalRecipe(String(recipe.idRecipe),recipe.nombre,recipe.descripcion)}
+                    src={recipe.images[0]}
+                    alt={`Post ${index + 1}`}
+                    className="w-full h-full   object-cover transform hover:scale-110 transition-all duration-200"
+                    onClick={() => handleShowModalRecipe(String(recipe.idRecipe), recipe.nombre, recipe.descripcion)}
                   />
-                 
-                ): (
+
+                ) : (
                   <img
-                  src={'https://via.placeholder.com/350'}
-                  alt={`Post ${index + 1}`}
-                  className="w-full h-full  object-cover transform hover:scale-110 transition-all duration-200"
+                    src={'https://via.placeholder.com/350'}
+                    alt={`Post ${index + 1}`}
+                    className="w-full h-full  object-cover transform hover:scale-110 transition-all duration-200"
                   />
                 )}
               </div>
