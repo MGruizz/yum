@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'react-toastify';
 
 export const getPopularCategories = async () => {
     try {
@@ -20,6 +21,17 @@ export const searchByCategory = async (category: string) => {
         console.log('response', response.data)
         return searchByCategory;
     } catch (error) {
+        console.error(error);
+    }
+}
+
+export const createCategory = async (nombre: any) => {
+    try {
+        const response = await axios.post('http://localhost:3000/tags/', {nombre});
+        const newCategory = response.data;
+        return newCategory;
+    } catch (error: any ) {        
+        toast.error(error.response.data.Error || 'Error al crear la categoria');
         console.error(error);
     }
 }

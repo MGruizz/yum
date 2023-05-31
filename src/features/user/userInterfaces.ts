@@ -4,6 +4,7 @@ export interface User {
     email: string;
     descripcion: string;
     foto_perfil: string;
+    is_admin?: Boolean;
   }
 
 export interface LoginFormValues {

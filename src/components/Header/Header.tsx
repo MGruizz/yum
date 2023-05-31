@@ -20,12 +20,14 @@ import CrearReceta from "../CrearReceta/CrearReceta";
 import { useAuth } from '../../context/AuthContext';
 import { removeToken, getUserToken } from '../../api/authApi';
 import { searchRecipe } from '../../api/recipeApi';
+import CrearCategoria from "../CrearCategoria/CrearCategoria";
 
 
 
 const Header: React.FC<HeaderProps> = () => {
   const userToken = getUserToken();
   const [showModal, setShowModal] = useState(false);
+  const [showModalCategory, setShowModalCategory] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const { setAuthenticated } = useAuth();
@@ -39,8 +41,8 @@ const Header: React.FC<HeaderProps> = () => {
       try {
         const userToken = getUserToken();
         setUser(userToken);
-        
-        
+
+
       } catch (error) {
         console.error("Error al cargar la información del usuario");
       }
@@ -58,7 +60,7 @@ const Header: React.FC<HeaderProps> = () => {
     setShowSidebar(!showSidebar);
   };
 
-  
+
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -75,6 +77,11 @@ const Header: React.FC<HeaderProps> = () => {
   const handleRecipeClick = () => {
     setShowModal(true);
   };
+
+  const handleCategoryClick = () => {
+    setShowModalCategory(true);
+  };
+
   const handleHomeClick = () => {
     navigate("/");
   };
@@ -151,6 +158,11 @@ const Header: React.FC<HeaderProps> = () => {
               </button>
               <div className=""></div>
             </div>
+            {(user && user.is_admin) && <div className="px-4 hidden lg:block">
+              <button className="py-2" onClick={handleCategoryClick}>
+                <AiOutlinePlusCircle className="text-2xl 2xl:text-3xl" />
+              </button>
+            </div>}
           </div>
 
           {/* Elementos del usuario */}
@@ -294,6 +306,12 @@ const Header: React.FC<HeaderProps> = () => {
         <CrearReceta
           isVisible={showModal}
           onClose={() => setShowModal(false)}
+        />
+      )}
+      {showModalCategory && (
+        <CrearCategoria
+          isVisible={showModalCategory}
+          onClose={() => setShowModalCategory(false)}
         />
       )}
     </Fragment>

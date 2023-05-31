@@ -22,3 +22,7 @@ export const validationSchema = Yup.object().shape({
   pasosReceta: Yup.array().min(1, 'Debe ingresar al menos un paso'),
   // fotoReceta: Yup.mixed().required('Debe cargar una foto de la receta'),
 });
+
+export const validationCategorySchema = Yup.object().shape({
+  nombreCategoria: Yup.string().required('Debe ingresar un nombre a la categoria'),
+});
