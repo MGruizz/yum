@@ -28,6 +28,7 @@ const UserProfile: React.FC = () => {
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [recetaSeleccionada, setRecetaSeleccionada] = useState({ id: '', name: '', description: '' });
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [usuarioActual, setUsuarioActual] = useState<User | null>(null);
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +36,7 @@ const UserProfile: React.FC = () => {
     const fetchUser = async () => {
       try {
         const userToken = getUserToken();
+        setUsuarioActual(userToken);
         if (userId) {
           const userData = await getUserById(userId);
           setUser(userData);
@@ -170,12 +172,12 @@ const UserProfile: React.FC = () => {
                     />
                   </div>
                 )}
-                <button
+                {(usuarioActual && usuarioActual.is_admin) && <button
                   className="bg-gray-400 hover:bg-gray-900  text-white text-xl font-normal rounded-full px-3 mx-5"
                   onClick={() => handleButtonClick()}
                 >
                   <FontAwesomeIcon icon={faEllipsisVertical} />
-                </button>
+                </button>}
                 {isOpen && (
                   <div ref={menuRef} className="origin-top-right right-20 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
                     <div className="py-1" role="none">
