@@ -3,7 +3,7 @@ import { CrearRecetaProps, FormRecetasInputs } from '../../interfaces/CrearRecet
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { validationSchema } from '../../utils/validators';
-import {createRecipe} from '../../api/recipeApi';
+import { createRecipe } from '../../api/recipeApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import Categorias from '../Categories/Categorias';
@@ -14,13 +14,13 @@ import { toast } from 'react-toastify';
 
 const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
 
-    // receta = query(idReceta)
     const [ingredientes, setIngredientes] = useState<string[]>([]);
     const [pasos, setPasos] = useState<{ numero: number, descripcion: string }[]>([]);
     const [inputIngrediente, setInputIngrediente] = useState<string>('');
     const [inputPaso, setInputPaso] = useState<string>('');
     const [numeroPasos, setNumeroPasos] = useState<number>(1);
     const [recipeCategorias, setRecipeCategorias] = useState<number[]>([]);
+    const [images, setImages] = useState<string[]>([]);
 
     const { register, handleSubmit, control, formState: { errors } } = useForm<FormRecetasInputs>({
         // @ts-ignore
@@ -61,19 +61,39 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
         setNumeroPasos(numeroPasos - 1);
     };
 
-    // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, setFieldValue: (field: string, value: any) => void) => {
-    //     if (event.currentTarget.files) {
-    //         setFieldValue("fotoReceta", event.currentTarget.files[0]);
-    //     }
-    // };
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length <= 5) {
+            const files = Array.from(event.target.files);
+            Promise.all(files.map(file => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        // limpiar "data:image/jpeg;base64," del resultado
+                        let base64Data = reader.result as string;
+                        base64Data = base64Data.split(',')[1];
+                        resolve(base64Data);
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            })).then((base64files: any) => {
+                // EPara actualizar las imagenes a las nuevas imagenes convertidas a base64
+                setImages(prevImages => [...prevImages, ...base64files]);
+            });
+        } else {
+            toast.error("Solo puedes cargar un máximo de 5 imágenes.");
+        }
+    };
 
     const onSubmit: SubmitHandler<FormRecetasInputs> = async (values) => {
         const valoresActualizados = {
             ...values,
             ingredientesReceta: ingredientes,
             pasosReceta: pasos,
-            categoriasReceta: recipeCategorias
+            categoriasReceta: recipeCategorias,
+            imagenesReceta: images
         };
+
         const result = await createRecipe(valoresActualizados);
         if (result) {
             toast.success('Receta creada con éxito!');
@@ -218,27 +238,19 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                                                 </div>
                                             )}
                                         </div>
-                                        <Categorias setCategories = {setRecipeCategorias}></Categorias>
-                                        {/* <div>
-                    <label htmlFor="fotoReceta">Foto:</label>
-                    <input
-                      {...register('fotoReceta')}
-                      type="file"
-                      name="fotoReceta"
-                      id="fotoReceta"
-                      onChange={(event) => {
-                        if (event.target.files) {
-                          setValue('fotoReceta', event.target.files[0]);
-                        }
-                      }}
-                      className="block"
-                    />
-                    {errors.fotoReceta && (
-                      <div className="text-red-500 text-sm">
-                        {/* {errors.fotoReceta.message}}
-                      </div>
-                    )}
-                  </div> */}
+                                        <Categorias setCategories={setRecipeCategorias}></Categorias>
+
+                                        <div className="mb-4">
+                                            <label htmlFor="imagenesReceta" className="block mb-2">Imágenes:</label>
+                                            <input
+                                                type="file"
+                                                name="imagenesReceta"
+                                                id="imagenesReceta"
+                                                accept="image/*"
+                                                onChange={handleImageChange}
+                                                multiple
+                                            />
+                                        </div>
 
                                         <div className="mb-4">
                                             <button
