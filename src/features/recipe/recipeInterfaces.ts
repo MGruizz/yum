@@ -42,3 +42,8 @@ export interface Comment{
     usuarioId: number;
     recetaId: number;
 }
+
+export interface Tag{
+    idTag: number;
+    nombreTag: number;
+}

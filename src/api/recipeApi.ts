@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Ingredient, Recipe, Step, Comment , RecipeFull} from '../features/recipe/recipeInterfaces';
+import { Ingredient, Recipe, Step, Comment , RecipeFull, Tag} from '../features/recipe/recipeInterfaces';
 import { getToken } from './authApi';
 
 export const createRecipe = async (data: any) => {
@@ -111,6 +111,15 @@ export const searchRecipe = async (search: string) => {
     console.log(error);
   }
 }
+
+export const getTagsByRecipeId = async (id: string): Promise<Tag[]> => {
+  try {
+    const response = (await axios.get<Tag[]>(`http://localhost:3000/tags/tagsPorReceta/${id}`));
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al obtener los tags de la receta.');
+  }
+};
 
 // export const getImagesRecipe = async (id: string) => {
 //   try {

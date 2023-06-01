@@ -1,4 +1,4 @@
-import { Comment, Ingredient, Recipe, RecipeFull, Step } from "../features/recipe/recipeInterfaces";
+import { Comment, Ingredient, Recipe, RecipeFull, Step, Tag } from "../features/recipe/recipeInterfaces";
 
 export function mapDbObjectToRecipe(dbObject: any): Recipe {
     return {
@@ -51,5 +51,11 @@ export function mapDbObjectToRecipeFull(dbObject: any): RecipeFull {
         likes: dbObject.likes,
         views: dbObject.visitas,
         images: dbObject.imagenes
+    };
+}
+export function mapDbObjectToTag(dbObject: any): Tag {
+    return {
+        idTag: dbObject.id,
+        nombreTag: dbObject.nombre
     };
 }
