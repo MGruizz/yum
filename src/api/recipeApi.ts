@@ -1,10 +1,12 @@
 import axios from 'axios'
 import { Ingredient, Recipe, Step, Comment , RecipeFull} from '../features/recipe/recipeInterfaces';
+import { getToken } from './authApi';
 
 export const createRecipe = async (data: any) => {
   try {
+    const token = getToken();
     // Hacer la solicitud POST
-    const response = await axios.post(`http://localhost:3000/recetas/`, data);
+    const response = await axios.post(`http://localhost:3000/recetas/`, data, { headers: { 'Authorization': `Bearer ${token}` } });
     if (response.data.res == 'Inserción exitosa') {
       return true;
     }
