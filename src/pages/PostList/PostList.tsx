@@ -27,14 +27,13 @@ const PostList = () => {
     const sortItems = (items: Recipe[]): Recipe[] => {
         return [...items].sort((a: Recipe, b: Recipe) => {
             if (sortCriteria === 'likes') {
-                const likesA = Number(a.likes) || 0; // convertir a número y proporcionar un valor predeterminado
-                const likesB = Number(b.likes) || 0; // convertir a número y proporcionar un valor predeterminado
+                const likesA = Number(a.likes) || 0;
+                const likesB = Number(b.likes) || 0;
                 if (isAscending) {
                     return likesA - likesB;
                 }
                 return likesB - likesA;
             } else if (sortCriteria === 'created_at') {
-                // proporcionar un valor predeterminado para created_at
                 const dateA = a.created_at ? new Date(a.created_at) : new Date();
                 const dateB = b.created_at ? new Date(b.created_at) : new Date();
                 if (isAscending) {
@@ -42,7 +41,7 @@ const PostList = () => {
                 }
                 return dateB.getTime() - dateA.getTime();
             }
-            return 0; // retornar 0 si no coincide ninguno de los criterios
+            return 0;
         });
     }
 
