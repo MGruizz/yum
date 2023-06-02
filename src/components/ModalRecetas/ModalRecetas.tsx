@@ -3,7 +3,7 @@ import { ModalRecetasProps } from "../../interfaces/ModalRecetasProps/ModalRecet
 import { CSSTransition } from "react-transition-group";
 import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
 import Comentarios from "../Comentarios/Comentarios";
-import {
+import { 
   getCommentsByRecipeId,
   getIngredientsByRecipeId,
   getRecipeById,
@@ -37,7 +37,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { ButtonWithMenuProps } from "../../interfaces/ButtonWithMenuProps/ButtonWithMenuProps";
 import Chip from "@mui/material/Chip";
-
 const ModalRecetas: React.FC<ModalRecetasProps> = ({
   isVisible,
   onClose,

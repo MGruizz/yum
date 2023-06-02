@@ -163,3 +163,13 @@ export const addComment = async (descripcion: string, idUsuario: string, idRecet
   }
 
 };
+
+export const deleteComment = async (id : number) => {
+  try {
+    const response = await instance.delete(`/comentarios/eliminar/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al eliminar comentario' + error);
+  }
+
+};
