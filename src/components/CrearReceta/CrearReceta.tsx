@@ -107,7 +107,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
     return (
         <div>
             {isVisible && (
-                <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center">
+                <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center z-50">
                     <div className="w-[1000px]">
                         <button
                             className="bg-red-500 text-white text-xl font-normal rounded-full px-2 float-right"
