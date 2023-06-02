@@ -3,7 +3,7 @@ import { ModalRecetasProps } from "../../interfaces/ModalRecetasProps/ModalRecet
 import { CSSTransition } from "react-transition-group";
 import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
 import Comentarios from "../Comentarios/Comentarios";
-import { 
+import {
   getCommentsByRecipeId,
   getIngredientsByRecipeId,
   getRecipeById,
@@ -50,6 +50,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   const [ingredients, setIngredients] = useState<Ingredient[] | null>(null);
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [likes, setLikes] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const userId = getUserToken() != null ? getUserToken()?.id : null;
   const [userLogged, setUserLogged] = useState<User | null>(null);
@@ -75,6 +76,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
           const fetchedRecipe = await getRecipeById(recipeId);
           const recipe: Recipe = mapDbObjectToRecipe(fetchedRecipe);
           setRecipe(recipe);
+          setLikes(recipe.likes);
 
           if (recipe.userId) {
             // Obtener usuario propetario de la receta
@@ -117,6 +119,8 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   const handleLike = async () => {
     try {
       if (userId) {
+        const newLikes = likes ? Number(likes) + 1 : 0;
+        setLikes(newLikes);
         await likeRecipe(userId, recipeId);
         setIsLiked(true);
       }
@@ -128,6 +132,8 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   const handleUnlike = async () => {
     try {
       if (userId) {
+        const newLikes = likes ? Number(likes) - 1 : 0;
+        setLikes(newLikes);
         await unlikeRecipe(userId, recipeId);
         setIsLiked(false);
       }
@@ -270,15 +276,17 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                       </a>
                     </div>
                     <div className="flex justify-between items-center mb-3">
-                      <h2 className="text-3xl font-bold text-left">
-                        {recipe?.nombre}
-                      </h2>
-                      <button
-                        onClick={isLiked ? handleUnlike : handleLike}
-                        className="text-xl font-normal rounded-full px-2"
-                      >
-                        {isLiked ? <AiFillHeart /> : <AiOutlineHeart />}
-                      </button>
+                      <h2 className="text-3xl font-bold text-left">{recipe?.nombre}</h2>
+                      {/* Sección de los likes */}
+                      <div className="flex items-center">
+                        <span className="mr-2">{likes}</span>
+                        <button
+                          onClick={isLiked ? handleUnlike : handleLike}
+                          className="text-xl font-normal rounded-full px-2"
+                        >
+                          {isLiked ? <AiFillHeart /> : <AiOutlineHeart />}
+                        </button>
+                      </div>
                     </div>
                     {/* {TAGS} */}
                     <div className="flex justify-between items-center my-2">
@@ -286,13 +294,13 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                       <div className="flex flex-wrap">
                         {categorias && categorias?.length > 0 ? categorias.map((cat) => (
                           <span
-                            key={cat.idTag} 
+                            key={cat.idTag}
                             className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mr-2 mb-2"
                           >
                             {cat.nombreTag}
                           </span>
-                        )):
-                        <span
+                        )) :
+                          <span
                             className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mr-2 mb-2"
                           > No tiene categoria</span>
                         }
