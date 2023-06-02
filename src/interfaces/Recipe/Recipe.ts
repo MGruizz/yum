@@ -6,6 +6,7 @@ export interface Recipe {
     likes: string;
     imageUrl: string;
     imagen?:string;
+    created_at?:string;
 }
 
 export interface PopularRecipe {

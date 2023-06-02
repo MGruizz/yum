@@ -2,12 +2,16 @@ import React, { Fragment, useState, useEffect } from "react";
 import useSearch from "../../hooks/useSearch";
 import ModalRecetas from '../../components/ModalRecetas/ModalRecetas';
 import Header from '../../components/Header/Header';
+import { Recipe } from "../../interfaces/Recipe/Recipe";
+import { throttle } from "lodash";
 
 const PostList = () => {
     const [showModal, setShowModal] = useState(false);
     const [receta, setReceta] = useState({ id: '', name: '', description: '' });
-    const [itemsToShow, setItemsToShow] = useState(5);
+    const [itemsToShow, setItemsToShow] = useState(10);
     const [isMax, setIsMax] = useState(false);
+    const [sortCriteria, setSortCriteria] = useState('likes');
+    const [isAscending, setIsAscending] = useState(false);
 
     const { searchResults } = useSearch();
 
@@ -20,19 +24,53 @@ const PostList = () => {
         });
     }
 
-    const loadMore = () => {
-        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
-        if (itemsToShow >= searchResults.length) {
-            setIsMax(true);
-            return;
-        }
-        setItemsToShow(itemsToShow + 10); // cargar 10 items más cuando se llega al final de la página
+    const sortItems = (items: Recipe[]): Recipe[] => {
+        return [...items].sort((a: Recipe, b: Recipe) => {
+            if (sortCriteria === 'likes') {
+                const likesA = Number(a.likes) || 0; // convertir a número y proporcionar un valor predeterminado
+                const likesB = Number(b.likes) || 0; // convertir a número y proporcionar un valor predeterminado
+                if (isAscending) {
+                    return likesA - likesB;
+                }
+                return likesB - likesA;
+            } else if (sortCriteria === 'created_at') {
+                // proporcionar un valor predeterminado para created_at
+                const dateA = a.created_at ? new Date(a.created_at) : new Date();
+                const dateB = b.created_at ? new Date(b.created_at) : new Date();
+                if (isAscending) {
+                    return dateA.getTime() - dateB.getTime();
+                }
+                return dateB.getTime() - dateA.getTime();
+            }
+            return 0; // retornar 0 si no coincide ninguno de los criterios
+        });
     }
+
+    const loadMore = () => {
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+    
+        if (scrollTop + window.innerHeight >= scrollHeight) {
+            setItemsToShow(prevItemsToShow => {
+                if (prevItemsToShow >= searchResults.length) {
+                    setIsMax(true);
+                    return prevItemsToShow;
+                }
+                return prevItemsToShow + 10;
+            });
+        }
+    }
+    
+    useEffect(() => {
+        const loadMoreThrottled = throttle(loadMore, 200);
+        window.addEventListener('scroll', loadMoreThrottled);
+        return () => window.removeEventListener('scroll', loadMoreThrottled);
+    }, [searchResults]);
 
     useEffect(() => {
         window.addEventListener('scroll', loadMore);
         return () => window.removeEventListener('scroll', loadMore);
-    }, [itemsToShow, isMax]);
+    }, [itemsToShow, isMax, sortCriteria, isAscending]);
 
     console.log(searchResults);
     
@@ -40,8 +78,24 @@ const PostList = () => {
         
         <Fragment>
             <Header></Header>
+            <div className="filter-buttons" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+                <label style={{ padding: '5px 10px 5px 0' }}>Ordenar según: </label>
+                <select 
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortCriteria(e.target.value)}
+                    style={{ marginRight: '10px' }}
+                >
+                    <option value="likes">Likes</option>
+                    <option value="created_at">Fecha</option>
+                </select>
+                <button 
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => setIsAscending(prev => !prev)} 
+                    style={{ background: 'lightblue', borderRadius: '5px', border: 'none', padding: '5px 10px', marginRight: '100px', cursor: 'pointer' }}
+                >
+                    {isAscending ? 'Ascendente' : 'Descendente'}
+                </button>
+            </div>
             <div className="max-w-screen-2xl mx-auto">
-                {searchResults.slice(0, itemsToShow).map((receta) => (
+                {sortItems(searchResults.slice(0, itemsToShow)).map((receta) => (
                     <div key={receta.id}>
                         <div
                             className="flex items-stretch my-8 mx-auto w-3/4 bg-white shadow-md rounded-md p-0 cursor-pointer overflow-hidden"
