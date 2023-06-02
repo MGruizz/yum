@@ -10,7 +10,8 @@ export function mapDbObjectToRecipe(dbObject: any): Recipe {
         eliminado: dbObject.deleted,
         nombre: dbObject.nombre,
         likes: dbObject.likes,
-        views: dbObject.visitas
+        views: dbObject.visitas,
+        imagenes: dbObject.imagenes
     };
 }
 

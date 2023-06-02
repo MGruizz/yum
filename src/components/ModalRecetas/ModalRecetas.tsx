@@ -247,7 +247,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                 <div className="md:col-star-1 md:col-end-2">
                   <img
                     className="object-cover overflow-hidden w-full h-full md:h-[35rem] lg:h-[35rem]"
-                    src="https://via.placeholder.com/200x270"
+                    src={recipe?.imagenes[0]}
                     alt=""
                   />
                 </div>

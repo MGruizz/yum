@@ -8,6 +8,7 @@ export interface Recipe{
     nombre: string;
     likes: number;
     views: number;
+    imagenes: string[];
 }
 
 export interface RecipeFull{
