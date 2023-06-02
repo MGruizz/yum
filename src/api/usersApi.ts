@@ -1,6 +1,6 @@
 import instance from "./axiosInstance";
 import axios from "axios";
-import { User, LoginFormValues } from "../features/user/userInterfaces";
+import { User, LoginFormValues, UserInformation } from "../features/user/userInterfaces";
 import { Recipe } from "../features/recipe/recipeInterfaces";
 import { getToken, saveToken } from "../api/authApi";
 import { AuthObject } from '../interfaces/Token/Token';
@@ -162,4 +162,13 @@ export const addComment = async (descripcion: string, idUsuario: string, idRecet
     throw new Error('Error al comentar' + error);
   }
 
+};
+
+export const getInfoDescripcion = async (id: string): Promise<UserInformation> => {
+  try {
+    const response = await instance.get<UserInformation>(`/usuarios/info/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al obtener información del usuario');
+  }
 };
