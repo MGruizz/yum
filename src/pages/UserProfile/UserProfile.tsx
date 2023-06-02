@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { FaPen } from "react-icons/fa";
 import Header from "../../components/Header/Header";
-import { getUserById, followUser, unfollowUser, isFollowingUser, updateUserProfile } from "../../api/usersApi";
-import { User } from "../../features/user/userInterfaces";
+import { getUserById, followUser, unfollowUser, isFollowingUser, updateUserProfile, getInfoDescripcion } from "../../api/usersApi";
+import { User, UserInformation } from "../../features/user/userInterfaces";
 import { useParams } from "react-router-dom";
 import { RecipeFull } from "../../features/recipe/recipeInterfaces";
 import { getUserToken } from "../../api/authApi";
@@ -19,6 +19,7 @@ import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 
 const UserProfile: React.FC = () => {
   const [publicacionesUsuarios, setPublicacionesUsuarios] = useState<RecipeFull[]>([]);
+  const [infoUsuario, setInfoUsuario] = useState<UserInformation | null>(null);
   const { userId } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [isCurrentUserProfile, setIsCurrentUserProfile] = useState<boolean>();
@@ -48,6 +49,8 @@ const UserProfile: React.FC = () => {
             setIsCurrentUserProfile(String(userToken.id) === userId);
             setIsFollowing(await isFollowingUser(userToken.id, parseInt(userId)));
           }
+
+          setInfoUsuario(await getInfoDescripcion(userId));
         }
 
       } catch (error) {
@@ -148,8 +151,9 @@ const UserProfile: React.FC = () => {
                 />
               )}
             </div>
+
             {/* Grid Nombre */}
-            <div className="col-span-1 md:col-span-2">
+            <div className="col-span-1 md:col-span-2 mt-5">
               <h1 className="text-2xl font-bold text-gray-800 text-left flex items-center">
                 {user?.username}
                 {!isCurrentUserProfile && isCurrentUserProfile !== undefined ? (
@@ -186,8 +190,24 @@ const UserProfile: React.FC = () => {
                   </div>
                 )}
               </h1>
-
             </div>
+
+            {/* Publicaciones, Seguidores, Seguidos */}
+            <div className="col-span-1 md:col-span-1 row-span-1 flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold text-gray-800">Publicaciones</h2>
+                <p className="text-gray-600">{infoUsuario?.publicaciones}</p>
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-gray-800 mx-2">Seguidores</h2>
+                <p className="text-gray-600">{infoUsuario?.seguidores}</p>
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-gray-800">Seguidos</h2>
+                <p className="text-gray-600">{infoUsuario?.seguidos}</p>
+              </div>
+            </div>
+
             {/* Grid Descripcion */}
             <div className="col-span-1 md:col-span-2 row-span-2">
               <p className="text-gray-600 text-left">{user?.descripcion}</p>
