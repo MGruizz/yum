@@ -99,6 +99,15 @@ export const likesByRecipeId = async (receta_Id: number) => {
   }
 }
 
+export const eliminarReceta = async (id: string) => {
+  try {
+    const response = await axios.put(`http://localhost:3000/recetas/eliminarreceta/${id}`);
+    return response.data;
+  } catch(error) {
+    throw new Error('Error al eliminar receta.');
+  }
+}
+
 export const searchRecipe = async (search: string) => {
   const data = {
     palabraclave : search

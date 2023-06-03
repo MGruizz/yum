@@ -9,6 +9,7 @@ import {
   getRecipeById,
   getStepsByRecipeId,
   getTagsByRecipeId,
+  eliminarReceta,
 } from "../../api/recipeApi";
 import {
   getUserById,
@@ -58,6 +59,8 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   const [categorias, setCategorias] = useState<Tag[] | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
+  //const autor = useState<Boolean>(recipe!.userId == user!.id)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -165,7 +168,16 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   };
 
   const handleDeleteRecipe = () => {
-    // Muestra un popup para confirmar la eliminación de la receta.
+    setIsConfirmationModalVisible(true);
+  };
+  
+  const confirmDelete = async () => {
+    await eliminarReceta(recipeId);
+    onClose();
+  };
+  
+  const cancelDelete = () => {
+    setIsConfirmationModalVisible(false);
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -210,12 +222,14 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
           className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center"
         >
           <div className="w-10/12 h-[30rem] sm:w-10/12 md:w-9/12 lg:w-8/12 xl:w-8/12 relative">
-            <button
-              className="bg-blue-500 text-white text-xl font-normal rounded-full px-3 right-10 top-2 absolute"
-              onClick={() => handleButtonClick()}
-            >
-              <FontAwesomeIcon icon={faEllipsisVertical} />
-            </button>
+            {/* autor && (*/
+              <button
+                className="bg-blue-500 text-white text-xl font-normal rounded-full px-3 right-10 top-2 absolute"
+                onClick={() => handleButtonClick()}
+              >
+                <FontAwesomeIcon icon={faEllipsisVertical} />
+              </button>
+            /*)*/}
             {isOpen && (
               <div
                 ref={menuRef}
@@ -227,14 +241,14 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                 <div className="py-1" role="none">
                   <a
                     onClick={() => handleMenuClick("Editar receta")}
-                    className="text-gray-700 block px-4 py-2 text-sm"
+                    className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-200 cursor-pointer"
                     role="menuitem"
                   >
                     Editar receta
                   </a>
                   <a
                     onClick={() => handleMenuClick("Eliminar receta")}
-                    className="text-gray-700 block px-4 py-2 text-sm"
+                    className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-200 cursor-pointer"
                     role="menuitem"
                   >
                     Eliminar receta
@@ -248,6 +262,27 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
             >
               X
             </button>
+            {isConfirmationModalVisible && (
+              <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center z-[1000]">
+                <div className="bg-white p-4 rounded-md">
+                  <h2 className="mb-4">¿Estás seguro de que quieres eliminar esta receta?</h2>
+                  <div className="flex justify-end">
+                    <button 
+                      className="bg-blue-500 text-white px-4 py-2 rounded mr-2" 
+                      onClick={cancelDelete}
+                    >
+                      Cancelar
+                    </button>
+                    <button 
+                      className="bg-red-500 text-white px-4 py-2 rounded" 
+                      onClick={confirmDelete}
+                    >
+                      Confirmar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="bg-white rounded mt-5">
               <div className="grid grid-cols-1 md:grid-cols-3">
                 <div className="md:col-star-1 md:col-end-2">
