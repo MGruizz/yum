@@ -85,7 +85,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                     reader.readAsDataURL(file);
                 });
             })).then((base64files: any) => {
-                // EPara actualizar las imagenes a las nuevas imagenes convertidas a base64
+                // Para actualizar las imagenes a las nuevas imagenes convertidas a base64
                 setImages(prevImages => [...prevImages, ...base64files]);
             });
         } else {
@@ -123,7 +123,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
         <div>
             {isVisible && (
                 <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center z-50">
-                    <div className="w-[1400px] h-[900px] overflow-y-auto bg-white rounded mt-5"> {/* Modificado aquí */}
+                    <div className="w-[1400px] h-[900px] overflow-y-auto bg-white rounded mt-5">
                         <button
                             className="bg-red-500 text-white text-xl font-normal rounded-full px-2 float-right"
                             onClick={() => onClose()}
@@ -131,8 +131,8 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                             X
                         </button>
                         <div className="bg-white rounded h-full grid grid-cols-12">
-                            {/* <div className="grid grid-cols-12"> */}
-                            <div className="col-span-12 md:col-span-5"> {/* Ajustado aquí */}
+                            <div className="col-span-12 md:col-span-5">
+
                                 <img
                                     className="object-cover h-full w-full"
                                     // style={customSize}
@@ -140,7 +140,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                                     alt=""
                                 />
                             </div>
-                            <div className="col-span-12 md:col-span-7 px-4 py-3 overflow-y-auto"> {/* Ajustado aquí */}
+                            <div className="col-span-12 md:col-span-7 px-4 py-3 overflow-y-auto">
 
                                 <form onSubmit={handleSubmit(onSubmit)}>
                                     <div className="mb-4">
@@ -256,8 +256,8 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                                     </div>
                                     <Categorias setCategories={setRecipeCategorias}></Categorias>
 
-                                    {/* Sección de las imagenes */}
-                                    <div className="my-4">
+                                    {/* Selector de imagenes */}
+                                    <div className="my-4" id="selectorImagenes">
                                         <label className="customFileUpload">
                                             Seleccionar imágenes
                                             <input
@@ -267,7 +267,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                                                 accept="image/*"
                                                 onChange={handleImageChange}
                                                 multiple
-                                                style={{ display: 'none' }}
+                                                style= {{ display: 'none' }}
                                             />
                                         </label>
                                         <div className="imagePreviewContainer">

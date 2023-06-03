@@ -136,18 +136,18 @@ const UserProfile: React.FC = () => {
           <div className="grid grid-rows-3 grid-cols-1 sm:grid-cols-3 gap-4">
 
             {/* Grid imagen */}
-            <div className="row-span-3 flex justify-center col-span-1 ">
+            <div className="row-span-3 flex justify-center col-span-1">
               {user && user?.foto_perfil ? (
                 <img
                   src={user?.foto_perfil}
                   alt="Profile"
-                  className="  h-auto rounded-full"
+                  className="w-56 h-56 object-cover rounded-full"
                 />
               ) : (
                 <img
                   src="https://via.placeholder.com/150"
                   alt="Profile"
-                  className="   h-auto rounded-full"
+                  className="w-52 h-52 object-cover rounded-full"
                 />
               )}
             </div>
