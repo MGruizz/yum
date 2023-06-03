@@ -113,6 +113,7 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
         if (result) {
             toast.success('Receta creada con éxito!');
             onClose();
+            window.location.reload();
         } else {
             toast.error('Hubo un error al crear la receta');
         }

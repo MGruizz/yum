@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { RegisterFormProps } from '../../interfaces/RegisterForm/RegisterForm';
 import { RegisterValidate } from '../../utils/validators';
 import { registerUser } from '../../api/usersApi';
+import { toast } from 'react-toastify';
 
 const RegisterForm: React.FC<RegisterFormProps> = () => {
 
@@ -20,8 +21,14 @@ const RegisterForm: React.FC<RegisterFormProps> = () => {
         onSubmit: async (values) => {
             try {
                 const response = await registerUser(values.username,values.email, values.password);
-                console.log('Usuario registrado con éxito:', response);
-                navigate('/login');
+                
+                if(response && !(response.Error)){
+                    toast.success(response.res);
+                    navigate('/login');
+                }
+                else{
+                    toast.error(response.Error || 'Error al registrar usuario');    
+                }
               } catch (error) {
                 console.error('Error al registrar el usuario:', error);
               }

@@ -5,7 +5,7 @@ import { Recipe } from "../features/recipe/recipeInterfaces";
 import { getToken, saveToken } from "../api/authApi";
 import { AuthObject } from '../interfaces/Token/Token';
 
-export const registerUser = async (username:string,email: string, password: string) => {
+export const registerUser = async (username: string, email: string, password: string) => {
   try {
     const response = await instance.post("/usuarios/", {
       username,
@@ -13,9 +13,8 @@ export const registerUser = async (username:string,email: string, password: stri
       password,
     });
     return response.data;
-  } catch (error) {
-    console.log('Error', error);
-
+  } catch (error: any) {
+    return error.response.data;
   }
 };
 
@@ -146,7 +145,7 @@ export const isLikingRecipe = async (usuario_id: number, receta_Id: number) => {
   }
 }
 
-export const addComment = async (descripcion: string, idUsuario: string, idReceta:string) => {
+export const addComment = async (descripcion: string, idUsuario: string, idReceta: string) => {
   try {
     const token = localStorage.getItem('authToken');
     const headers = {
@@ -156,7 +155,7 @@ export const addComment = async (descripcion: string, idUsuario: string, idRecet
       descripcion: descripcion,
       usuario_id: idUsuario,
       receta_id: idReceta,
-    },{headers});
+    }, { headers });
     return response.data
   } catch (error) {
     throw new Error('Error al comentar' + error);
@@ -164,7 +163,7 @@ export const addComment = async (descripcion: string, idUsuario: string, idRecet
 
 };
 
-export const deleteComment = async (id : number) => {
+export const deleteComment = async (id: number) => {
   try {
     const response = await instance.delete(`/comentarios/eliminar/${id}`);
     return response.data;
