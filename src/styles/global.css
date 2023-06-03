@@ -1,0 +1,69 @@
+.imagePreviewContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.imagePreviewWrapper {
+    position: relative;
+    margin: 10px;
+}
+
+.imagePreview {
+    height: 200px;
+    width: 200px;
+    object-fit: cover;
+}
+
+.imageRemoveButton {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.imagePreviewContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.imagePreviewWrapper {
+    position: relative;
+    margin: 10px;
+}
+
+.imagePreview {
+    height: 200px;
+    width: 200px;
+    object-fit: cover;
+}
+
+.imageRemoveButton {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.customFileUpload {
+    display: inline-block;
+    padding: 10px;
+    background: #ddd;
+    cursor: pointer;
+    border-radius: 5px;
+}
