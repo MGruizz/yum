@@ -33,31 +33,30 @@ const UserProfile: React.FC = () => {
 
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userToken = getUserToken();
-        setUsuarioActual(userToken);
-        if (userId) {
-          const userData = await getUserById(userId);
-          setUser(userData);
+  const fetchUser = async () => {
+    try {
+      const userToken = getUserToken();
+      setUsuarioActual(userToken);
+      if (userId) {
+        const userData = await getUserById(userId);
+        setUser(userData);
 
-          const recipesData = await getRecipesFullByUserId(userId);
-          const mappearRecipe = recipesData.map(mapDbObjectToRecipeFull);
-          setPublicacionesUsuarios(mappearRecipe);
-          if (userToken) {
-            setIsCurrentUserProfile(String(userToken.id) === userId);
-            setIsFollowing(await isFollowingUser(userToken.id, parseInt(userId)));
-          }
-
-          setInfoUsuario(await getInfoDescripcion(userId));
+        const recipesData = await getRecipesFullByUserId(userId);
+        const mappearRecipe = recipesData.map(mapDbObjectToRecipeFull);
+        setPublicacionesUsuarios(mappearRecipe);
+        if (userToken) {
+          setIsCurrentUserProfile(String(userToken.id) === userId);
+          setIsFollowing(await isFollowingUser(userToken.id, parseInt(userId)));
         }
 
-      } catch (error) {
-        console.error("Error al cargar la información del usuario");
+        setInfoUsuario(await getInfoDescripcion(userId));
       }
-    };
+    } catch (error) {
+      console.error("Error al cargar la información del usuario");
+    }
+  };
 
+  useEffect(() => {
     fetchUser();
   }, [userId, refreshKey]);
 
@@ -69,17 +68,20 @@ const UserProfile: React.FC = () => {
     setShowModal(false);
   };
 
-  const handleSave = async (username: string, descripcion: string) => {
+  const handleSave = async (username: string, descripcion: string, fotoBase64: string | null) => {
 
     const { id } = getUserToken()!
     if (user && id) {
 
       try {
-        const token = await updateUserProfile(id, username, descripcion);
+        const token = await updateUserProfile(id, username, descripcion, fotoBase64);
+        fetchUser();
         setUser(token);
+        
         setShowModal(false);
         setRefreshKey((oldKey) => oldKey + 1);
-        toast.success('¡Perfil editado exitosamente!');
+        window.location.reload();
+        //toast.success('¡Perfil editado exitosamente!');
       } catch (error) {
         console.error("Error al actualizar el perfil del usuario", error);
         toast.error('¡Ocurrió un error al editar el perfil!');
@@ -94,9 +96,27 @@ const UserProfile: React.FC = () => {
         const id_seguido = parseInt(userId);
         if (!isFollowing) {
           await followUser(userToken.id, id_seguido);
+
+          // Incrementar el numero de seguidores
+          if (infoUsuario) {
+            setInfoUsuario({
+              ...infoUsuario,
+              seguidores: Number(infoUsuario.seguidores) + 1,
+            });
+          }
+
           toast.success('¡Has seguido al usuario con éxito!');
         } else {
           await unfollowUser(userToken.id, id_seguido);
+
+          // Decrementar el numero de seguidores
+          if (infoUsuario) {
+            setInfoUsuario({
+              ...infoUsuario,
+              seguidores: Number(infoUsuario.seguidores) - 1,
+            });
+          }
+
           toast.success('¡Has dejado de seguir al usuario con éxito!');
         }
         setIsFollowing(await isFollowingUser(userToken.id, id_seguido));
@@ -116,14 +136,12 @@ const UserProfile: React.FC = () => {
     });
   }
 
-
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
   }
 
   const handleMenuClick = (action: string) => {
     setIsOpen(false);
-    // hiddeProfile(user.id);
   }
 
   return (
