@@ -30,6 +30,7 @@ const UserProfile: React.FC = () => {
   const [recetaSeleccionada, setRecetaSeleccionada] = useState({ id: '', name: '', description: '' });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [usuarioActual, setUsuarioActual] = useState<User | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +78,7 @@ const UserProfile: React.FC = () => {
         const token = await updateUserProfile(id, username, descripcion, fotoBase64);
         fetchUser();
         setUser(token);
-        
+
         setShowModal(false);
         setRefreshKey((oldKey) => oldKey + 1);
         window.location.reload();
@@ -90,40 +91,41 @@ const UserProfile: React.FC = () => {
   };
 
   const handleFollow = async () => {
+    if (isProcessing) return;  // bloquea la ejecución simultánea
+
+    setIsProcessing(true);  // comienza la operación de seguir/dejar de seguir
     const userToken = getUserToken();
     if (userToken && userId) {
       try {
         const id_seguido = parseInt(userId);
         if (!isFollowing) {
           await followUser(userToken.id, id_seguido);
-
-          // Incrementar el numero de seguidores
           if (infoUsuario) {
             setInfoUsuario({
               ...infoUsuario,
               seguidores: Number(infoUsuario.seguidores) + 1,
             });
           }
-
           toast.success('¡Has seguido al usuario con éxito!');
         } else {
           await unfollowUser(userToken.id, id_seguido);
-
-          // Decrementar el numero de seguidores
           if (infoUsuario) {
             setInfoUsuario({
               ...infoUsuario,
               seguidores: Number(infoUsuario.seguidores) - 1,
             });
           }
-
           toast.success('¡Has dejado de seguir al usuario con éxito!');
         }
         setIsFollowing(await isFollowingUser(userToken.id, id_seguido));
       } catch (error) {
         console.error('Error al seguir/dejar de seguir al usuario', error);
         toast.error('Hubo un error al intentar seguir/dejar de seguir al usuario. Por favor inténtalo de nuevo.');
+      } finally {
+        setIsProcessing(false);  // termina la operación de seguir/dejar de seguir
       }
+    } else {
+      setIsProcessing(false);
     }
   }
 
