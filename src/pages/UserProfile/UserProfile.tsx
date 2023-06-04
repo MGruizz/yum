@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { FaPen } from "react-icons/fa";
 import Header from "../../components/Header/Header";
 import { getUserById, followUser, unfollowUser, isFollowingUser, updateUserProfile, getInfoDescripcion } from "../../api/usersApi";
-import { User, UserInformation } from "../../features/user/userInterfaces";
+import { User, UserDetail, UserInformation } from "../../features/user/userInterfaces";
 import { useParams } from "react-router-dom";
 import { RecipeFull } from "../../features/recipe/recipeInterfaces";
 import { getUserToken } from "../../api/authApi";
@@ -15,6 +15,7 @@ import { mapDbObjectToRecipeFull } from "../../utils/mapper";
 import ModalRecetas from '../../components/ModalRecetas/ModalRecetas';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import ListUsersModal from "../../components/ListUsersModal/ListUsersModal";
 
 
 const UserProfile: React.FC = () => {
@@ -31,6 +32,8 @@ const UserProfile: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [usuarioActual, setUsuarioActual] = useState<User | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isFollowModalVisible, setIsFollowModalVisible] = useState(false);
+  const [modalUsers, setModalUsers] = useState<UserDetail[] | null>(null);
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -69,6 +72,20 @@ const UserProfile: React.FC = () => {
     setShowModal(false);
   };
 
+  const handleShowFollowers = () => {
+    setModalUsers(infoUsuario?.seguidores.list || null);
+    setIsFollowModalVisible(true);
+  };
+
+  const handleShowFollowed = () => {
+    setModalUsers(infoUsuario?.seguidos.list || null);
+    setIsFollowModalVisible(true);
+  };
+
+  const handleCloseFollowModal = () => {
+    setIsFollowModalVisible(false);
+  };
+
   const handleSave = async (username: string, descripcion: string, fotoBase64: string | null) => {
 
     const { id } = getUserToken()!
@@ -101,18 +118,50 @@ const UserProfile: React.FC = () => {
         if (!isFollowing) {
           await followUser(userToken.id, id_seguido);
           if (infoUsuario) {
-            setInfoUsuario({
-              ...infoUsuario,
-              seguidores: Number(infoUsuario.seguidores) + 1,
+            setInfoUsuario(infoUsuario => {
+              if (!infoUsuario) {
+                return null;
+              }
+              return {
+                ...infoUsuario,
+                seguidores: infoUsuario.seguidores ? {
+                  count: infoUsuario.seguidores.count + 1,
+                  list: infoUsuario.seguidores.list || [],
+                } : {
+                  count: 1,
+                  list: [],
+                },
+                seguidos: infoUsuario.seguidos || {
+                  count: 0,
+                  list: [],
+                },
+                publicaciones: infoUsuario.publicaciones,
+              };
             });
           }
           toast.success('¡Has seguido al usuario con éxito!');
         } else {
           await unfollowUser(userToken.id, id_seguido);
           if (infoUsuario) {
-            setInfoUsuario({
-              ...infoUsuario,
-              seguidores: Number(infoUsuario.seguidores) - 1,
+            setInfoUsuario(infoUsuarioPrev => {
+              if (!infoUsuarioPrev) {
+                return null;
+              }
+              return {
+                ...infoUsuarioPrev,
+                seguidores: infoUsuarioPrev.seguidores ? {
+                  count: Math.max(0, infoUsuarioPrev.seguidores.count - 1),
+                  list: infoUsuarioPrev.seguidores.list || [],
+                } : {
+                  count: 0,
+                  list: [],
+                },
+                seguidos: infoUsuarioPrev.seguidos || {
+                  count: 0,
+                  list: [],
+                },
+                publicaciones: infoUsuarioPrev.publicaciones,
+              };
             });
           }
           toast.success('¡Has dejado de seguir al usuario con éxito!');
@@ -219,12 +268,16 @@ const UserProfile: React.FC = () => {
                 <p className="text-gray-600">{infoUsuario?.publicaciones}</p>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-800 mx-2">Seguidores</h2>
-                <p className="text-gray-600">{infoUsuario?.seguidores}</p>
+                <h2 className="text-xl font-bold text-gray-800 mx-2 cursor-pointer" onClick={handleShowFollowers}>
+                  Seguidores
+                </h2>
+                <p className="text-gray-600">{infoUsuario?.seguidores.count}</p>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-800">Seguidos</h2>
-                <p className="text-gray-600">{infoUsuario?.seguidos}</p>
+                <h2 className="text-xl font-bold text-gray-800 cursor-pointer" onClick={handleShowFollowed}>
+                  Seguidos
+                </h2>
+                <p className="text-gray-600">{infoUsuario?.seguidores.count}</p>
               </div>
             </div>
 
@@ -244,7 +297,7 @@ const UserProfile: React.FC = () => {
                   <img
                     src={recipe.images[0]}
                     alt={`Post ${index + 1}`}
-                    className="w-full h-full   object-cover transform hover:scale-110 transition-all duration-200"
+                    className="w-full h-full   object-cover transform hover:scale-110 transition-all duration-200 cursor-pointer"
                     onClick={() => handleShowModalRecipe(String(recipe.idRecipe), recipe.nombre, recipe.descripcion)}
                   />
 
@@ -258,6 +311,7 @@ const UserProfile: React.FC = () => {
               </div>
             ))}
             {showModalPublicacion && <ModalRecetas tituloReceta={recetaSeleccionada.name} isVisible={showModalPublicacion} onClose={() => setShowModalPublicacion(false)} recipeId={recetaSeleccionada.id} />}
+            <ListUsersModal isVisible={isFollowModalVisible} users={modalUsers} onClose={handleCloseFollowModal} />
           </div>
         </div>
       </div>
