@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import { ModalEditProfileProps } from '../../interfaces/UserProfile/ModalEditProfileProps';
+import { convertFileToBase64 } from '../../utils/handleImages';
 
 const EditProfileModal: React.FC<ModalEditProfileProps> = ({ isVisible, user, onClose, onSave }) => {
     const [username, setUsername] = useState(user?.username || '');
     const [descripcion, setDescripcion] = useState(user?.descripcion || '');
+    const [foto, setFoto] = useState<File | null>(null);
 
     useEffect(() => {
         if (user) {
@@ -16,7 +18,14 @@ const EditProfileModal: React.FC<ModalEditProfileProps> = ({ isVisible, user, on
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        onSave(username, descripcion);
+    
+        if (foto) {
+            convertFileToBase64(foto, (base64Data) => {
+                onSave(username, descripcion, base64Data);
+            });
+        } else {
+            onSave(username, descripcion, null);
+        }
     };
 
     if (!isVisible) {
@@ -43,6 +52,16 @@ const EditProfileModal: React.FC<ModalEditProfileProps> = ({ isVisible, user, on
                             id="descripcion"
                             value={descripcion}
                             onChange={(e) => setDescripcion(e.target.value)}
+                            className="border-2 rounded px-2 py-1 text-lg"
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <label htmlFor="profilePicture" className="font-semibold text-lg">Foto de perfil:</label>
+                        <input
+                            type="file"
+                            id="profilePicture"
+                            accept="image/*"
+                            onChange={(e) => setFoto(e.target.files?.[0] || null)}
                             className="border-2 rounded px-2 py-1 text-lg"
                         />
                     </div>
