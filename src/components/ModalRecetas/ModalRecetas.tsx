@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ModalRecetasProps } from "../../interfaces/ModalRecetasProps/ModalRecetasProps";
 import { CSSTransition } from "react-transition-group";
-import { FiChevronDown, FiChevronUp, FiHeart } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp} from "react-icons/fi";
 import Comentarios from "../Comentarios/Comentarios";
 import {
   getCommentsByRecipeId,
@@ -36,8 +36,9 @@ import { getUserToken } from "../../api/authApi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import  EditarReceta  from "../EditarReceta/EditarReceta";
 import { ButtonWithMenuProps } from "../../interfaces/ButtonWithMenuProps/ButtonWithMenuProps";
-import Chip from "@mui/material/Chip";
+
 const ModalRecetas: React.FC<ModalRecetasProps> = ({
   isVisible,
   onClose,
@@ -60,6 +61,8 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   const menuRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
   //const autor = useState<Boolean>(recipe!.userId == user!.id)
 
   useEffect(() => {
@@ -164,7 +167,8 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   };
 
   const handleEditRecipe = () => {
-    // Abre el modal para editar la receta.
+
+    setShowModal(true);
   };
 
   const handleDeleteRecipe = () => {
@@ -246,6 +250,10 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                   >
                     Editar receta
                   </a>
+                  {/* <EditarReceta
+                      isVisible={showModal}
+                      onClose={() => setShowModal(false)}
+                  /> */}
                   <a
                     onClick={() => handleMenuClick("Eliminar receta")}
                     className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-200 cursor-pointer"
