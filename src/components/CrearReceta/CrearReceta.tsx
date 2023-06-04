@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../../styles/global.css';
 import { toast } from 'react-toastify';
+import { convertFileToBase64 } from '../../utils/handleImages';
 
 const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
 
@@ -27,11 +28,6 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
         // @ts-ignore
         resolver: yupResolver(validationSchema),
     });
-
-    const customSize = {
-        width: 400,
-        height: 720
-    }
 
     const agregarIngrediente = () => {
         if (inputIngrediente.trim() !== "") {
@@ -74,19 +70,19 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
 
             Promise.all(files.map(file => {
                 return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        // limpiar "data:image/jpeg;base64," del resultado
-                        let base64Data = reader.result as string;
-                        base64Data = base64Data.split(',')[1];
-                        resolve(base64Data);
-                    };
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
+                    convertFileToBase64(file, (base64Data) => {
+                        if (base64Data) {
+                            resolve(base64Data);
+                        } else {
+                            reject("Error reading file");
+                        }
+                    });
                 });
             })).then((base64files: any) => {
-                // Para actualizar las imagenes a las nuevas imagenes convertidas a base64
                 setImages(prevImages => [...prevImages, ...base64files]);
+            }).catch(error => {
+                console.error(error);
+                toast.error("Error al leer el archivo de imagen.");
             });
         } else {
             toast.error("Solo puedes cargar un máximo de 5 imágenes.");
@@ -94,11 +90,10 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
     };
 
     const handleRemoveImage = (index: number) => {
-        // Elimina la imagen seleccionada de ambas listas de imágenes
+        // Se elimina imagen de ambas listas
         setImages(images => images.filter((_, imgIndex) => imgIndex !== index));
         setImagesPreview(imagesPrev => imagesPrev.filter((_, imgIndex) => imgIndex !== index));
     };
-
 
     const onSubmit: SubmitHandler<FormRecetasInputs> = async (values) => {
         const valoresActualizados = {
@@ -133,10 +128,8 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                         </button>
                         <div className="bg-white rounded h-full grid grid-cols-12">
                             <div className="col-span-12 md:col-span-5">
-
                                 <img
                                     className="object-cover h-full w-full"
-                                    // style={customSize}
                                     src="https://via.placeholder.com/200x270"
                                     alt=""
                                 />
@@ -300,7 +293,6 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
                                     </div>
                                 </form>
                             </div>
-                            {/* </div> */}
                         </div>
                     </div>
                 </div>
@@ -309,6 +301,5 @@ const CrearReceta: React.FC<CrearRecetaProps> = ({ isVisible, onClose }) => {
         </div>
     );
 };
-
 
 export default CrearReceta;

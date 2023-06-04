@@ -49,12 +49,12 @@ export const getRecipesByUserId = async (id: string): Promise<Recipe[]> => {
   }
 };
 
-export const updateUserProfile = async (idUsuario: number, nombreUsuario: string, descripcion: string) => {
+export const updateUserProfile = async (idUsuario: number, nombreUsuario: string, descripcion: string, fotoBase64: string | null) => {
   const token = getToken();
 
   const response = await instance.put(
     `/usuarios/${idUsuario}`,
-    { nombreUsuario, descripcion },
+    { nombreUsuario, descripcion, fotoBase64 },
     { headers: { 'Authorization': `Bearer ${token}` } }
   );
 
