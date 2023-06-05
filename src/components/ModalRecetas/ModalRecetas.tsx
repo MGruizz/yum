@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ModalRecetasProps } from "../../interfaces/ModalRecetasProps/ModalRecetasProps";
 import { CSSTransition } from "react-transition-group";
-import { FiChevronDown, FiChevronUp} from "react-icons/fi";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import Comentarios from "../Comentarios/Comentarios";
 import {
   getCommentsByRecipeId,
@@ -36,7 +36,7 @@ import { getUserToken } from "../../api/authApi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
-import  EditarReceta  from "../EditarReceta/EditarReceta";
+import EditarReceta from "../EditarReceta/EditarReceta";
 import { ButtonWithMenuProps } from "../../interfaces/ButtonWithMenuProps/ButtonWithMenuProps";
 
 const ModalRecetas: React.FC<ModalRecetasProps> = ({
@@ -60,7 +60,8 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   const [categorias, setCategorias] = useState<Tag[] | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-  const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
+  const [isConfirmationModalVisible, setIsConfirmationModalVisible] =
+    useState(false);
   const [showModal, setShowModal] = useState(false);
 
   //const autor = useState<Boolean>(recipe!.userId == user!.id)
@@ -167,19 +168,18 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   };
 
   const handleEditRecipe = () => {
-
     setShowModal(true);
   };
 
   const handleDeleteRecipe = () => {
     setIsConfirmationModalVisible(true);
   };
-  
+
   const confirmDelete = async () => {
     await eliminarReceta(recipeId);
     onClose();
   };
-  
+
   const cancelDelete = () => {
     setIsConfirmationModalVisible(false);
   };
@@ -226,14 +226,16 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
           className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center"
         >
           <div className="w-10/12 h-[30rem] sm:w-10/12 md:w-9/12 lg:w-8/12 xl:w-8/12 relative">
-            {/* autor && (*/
+            {
+              /* autor && (*/
               <button
                 className="bg-blue-500 text-white text-xl font-normal rounded-full px-3 right-10 top-2 absolute"
                 onClick={() => handleButtonClick()}
               >
                 <FontAwesomeIcon icon={faEllipsisVertical} />
               </button>
-            /*)*/}
+              /*)*/
+            }
             {isOpen && (
               <div
                 ref={menuRef}
@@ -250,10 +252,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                   >
                     Editar receta
                   </a>
-                  {/* <EditarReceta
-                      isVisible={showModal}
-                      onClose={() => setShowModal(false)}
-                  /> */}
+
                   <a
                     onClick={() => handleMenuClick("Eliminar receta")}
                     className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-200 cursor-pointer"
@@ -273,16 +272,18 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
             {isConfirmationModalVisible && (
               <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center z-[1000]">
                 <div className="bg-white p-4 rounded-md">
-                  <h2 className="mb-4">¿Estás seguro de que quieres eliminar esta receta?</h2>
+                  <h2 className="mb-4">
+                    ¿Estás seguro de que quieres eliminar esta receta?
+                  </h2>
                   <div className="flex justify-end">
-                    <button 
-                      className="bg-blue-500 text-white px-4 py-2 rounded mr-2" 
+                    <button
+                      className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
                       onClick={cancelDelete}
                     >
                       Cancelar
                     </button>
-                    <button 
-                      className="bg-red-500 text-white px-4 py-2 rounded" 
+                    <button
+                      className="bg-red-500 text-white px-4 py-2 rounded"
                       onClick={confirmDelete}
                     >
                       Confirmar
@@ -291,6 +292,15 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                 </div>
               </div>
             )}
+            {/* EDICION RECETA */}
+            <EditarReceta
+              isVisible={showModal}
+              onClose={() => setShowModal(false)}
+              receta={recipe ? recipe : null}
+              ingredientes={ingredients}
+              pasos={steps}
+              tags={categorias}
+            />
             <div className="bg-white rounded mt-5">
               <div className="grid grid-cols-1 md:grid-cols-3">
                 <div className="md:col-star-1 md:col-end-2">
@@ -319,7 +329,9 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                       </a>
                     </div>
                     <div className="flex justify-between items-center mb-3">
-                      <h2 className="text-3xl font-bold text-left">{recipe?.nombre}</h2>
+                      <h2 className="text-3xl font-bold text-left">
+                        {recipe?.nombre}
+                      </h2>
                       {/* Sección de los likes */}
                       <div className="flex items-center">
                         <span className="mr-2">{likes}</span>
@@ -335,18 +347,21 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
                     <div className="flex justify-between items-center my-2">
                       <h2 className="text-gray-600">Tags:</h2>
                       <div className="flex flex-wrap">
-                        {categorias && categorias?.length > 0 ? categorias.map((cat) => (
-                          <span
-                            key={cat.idTag}
-                            className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mr-2 mb-2"
-                          >
-                            {cat.nombreTag}
+                        {categorias && categorias?.length > 0 ? (
+                          categorias.map((cat) => (
+                            <span
+                              key={cat.idTag}
+                              className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mr-2 mb-2"
+                            >
+                              {cat.nombreTag}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mr-2 mb-2">
+                            {" "}
+                            No tiene categoria
                           </span>
-                        )) :
-                          <span
-                            className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800 mr-2 mb-2"
-                          > No tiene categoria</span>
-                        }
+                        )}
                       </div>
                     </div>
                     {/* Descricion */}

@@ -34,7 +34,7 @@ export interface Step{
 export interface Ingredient{
     idIngredient: number;
     recetaId: number;
-    nombre: number;
+    nombre: string;
 }
 
 export interface Comment{
@@ -46,5 +46,5 @@ export interface Comment{
 
 export interface Tag{
     idTag: number;
-    nombreTag: number;
+    nombreTag: string;
 }
