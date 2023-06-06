@@ -6,7 +6,7 @@ import {
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { validationSchema } from "../../utils/validators";
-import { createRecipe , getCategories} from "../../api/recipeApi";
+import { editRecipe, getCategories } from "../../api/recipeApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import Categorias from "../Categories/Categorias";
@@ -14,35 +14,32 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/global.css";
 import { toast } from "react-toastify";
-import {Tag} from "../../features/recipe/recipeInterfaces";
+import { Tag } from "../../features/recipe/recipeInterfaces";
 import { Categories } from "../../interfaces/Categories/Categories";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-
+import { mapDbObjectToTag } from "../../utils/mapper";
 
 const EditarReceta: React.FC<EditarRecetaProps> = ({
-  isVisible,
-  onClose,
-  receta,
-  ingredientes,
-  pasos,
-  tags,
+    isVisible,
+    onClose,
+    receta,
+    ingredientes,
+    pasos,
+    tags
 }) => {
+
+
   const { setValue } = useForm<FormRecetasInputs>();
-  const [ingredientesEditados, setIngredientesEditados] = useState<string[]>(
-    []
-  );
-  const [pasosEditados, setPasosEditados] = useState<
-    { numero: number; descripcion: string }[]
-  >([]);
+
   const [inputIngrediente, setInputIngrediente] = useState<string>("");
   const [inputPaso, setInputPaso] = useState<string>("");
   const [numeroPasos, setNumeroPasos] = useState<number>(1);
-  const [categoriasEditadas, setCategoriasEditadas] = useState<number[]>([]);
   const [images, setImages] = useState<string[]>([]);
   const [imagesPreview, setImagesPreview] = useState<string[]>([]);
+  const [Allcategories, setAllCategories] = useState<Tag[]>([]);
   const {
     register,
     handleSubmit,
@@ -52,35 +49,39 @@ const EditarReceta: React.FC<EditarRecetaProps> = ({
     // @ts-ignore
     resolver: yupResolver(validationSchema),
   });
-  const [Allcategories, setAllCategories] = useState<Tag[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<Tag[]>([]);
+const [ingredientesEditados, setIngredientesEditados] = useState < string[] > (ingredientes ? ingredientes.map((ingrediente) => ingrediente.nombre) : []);
+
+const [pasosEditados, setPasosEditados] = useState < {
+    numero: number;
+    descripcion: string
+}[] > (pasos ? pasos.map((paso) => ({numero: paso.orden, descripcion: paso.descripcion})) : []);
+
+  const [selectedCategories, setSelectedCategories] = useState<Tag[]>(
+    tags ? tags : []
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       const categoriasData = await getCategories();
-      setAllCategories(categoriasData);
+      const categoriasDataMapped = categoriasData.map(mapDbObjectToTag);
+      setAllCategories(categoriasDataMapped);
     };
-    
+
     if (receta && ingredientes && pasos && tags) {
       setValue("nombreReceta", receta.nombre);
       setValue("descripcionReceta", receta.descripcion);
-      setIngredientesEditados(
-        ingredientes.map((ingrediente) => ingrediente.nombre)
-      );
-      setPasosEditados(
-        pasos.map((paso) => ({
-          numero: paso.orden,
-          descripcion: paso.descripcion,
-        }))
-      );
-      setCategoriasEditadas(
-        tags.map((recipeCategorias) => recipeCategorias.idTag)
-      );
-      setSelectedCategories(tags);
+      // setIngredientesEditados(
+      //   ingredientes.map((ingrediente) => ingrediente.nombre)
+      // );
+      // setPasosEditados(
+      //   pasos.map((paso) => ({
+      //     numero: paso.orden,
+      //     descripcion: paso.descripcion,
+      //   }))
+      // );
     }
     fetchData();
-    // Hacer algo similar para los tags si es necesario
-  }, [receta, ingredientes, pasos, tags, setValue]);
+  }, [receta, ingredientes, pasos, tags, setValue, Allcategories]);
 
   const agregarIngrediente = () => {
     if (inputIngrediente.trim() !== "") {
@@ -165,7 +166,9 @@ const EditarReceta: React.FC<EditarRecetaProps> = ({
   const handleSelect = (category: Tag | null) => {
     if (category) {
       setSelectedCategories([...selectedCategories, category]);
-      setAllCategories(Allcategories.filter((cat) => cat.idTag !== category.idTag));
+      setAllCategories(
+        Allcategories.filter((cat) => cat.idTag !== category.idTag)
+      );
     }
   };
 
@@ -178,13 +181,13 @@ const EditarReceta: React.FC<EditarRecetaProps> = ({
       imagenesReceta: images,
     };
 
-    const result = await createRecipe(valoresActualizados);
+    const result = await editRecipe(valoresActualizados);
     if (result) {
-      toast.success("Receta creada con éxito!");
+      toast.success("Receta editada con éxito!");
       onClose();
       window.location.reload();
     } else {
-      toast.error("Hubo un error al crear la receta");
+      toast.error("Hubo un error al editar la receta");
     }
     // await createRecipe(valoresActualizados) ? onClose() : console.log('error'); // Agregar pop-up
   };

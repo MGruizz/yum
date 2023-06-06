@@ -19,5 +19,5 @@ export interface FormRecetasInputs {
     descripcionReceta: string;
     ingredientesReceta: string[];
     pasosReceta: string[];
-    // fotoReceta: FileList;
+    //imagenes: string[];
 }

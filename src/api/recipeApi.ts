@@ -130,6 +130,22 @@ export const getTagsByRecipeId = async (id: string): Promise<Tag[]> => {
   }
 };
 
+export const editRecipe = async (data: any) => {
+  try {
+    const token = getToken();
+    // Hacer la solicitud POST
+    const response = await axios.put(`http://localhost:3000/recetas/editreceta/`, data, { headers: { 'Authorization': `Bearer ${token}` } });
+    if (response.data.res === 'Inserción exitosa') {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    // Si hay algún error, mostrarlo en la consola y devolver null
+    console.error(error);
+    return false;
+  }
+}
+
 // export const getImagesRecipe = async (id: string) => {
 //   try {
 //     const response = (await axios.get(`http://localhost:3000/imagenes/receta/${id}`));
