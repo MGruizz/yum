@@ -306,6 +306,7 @@ const UserProfile: React.FC = () => {
                     src={'https://via.placeholder.com/350'}
                     alt={`Post ${index + 1}`}
                     className="w-full h-full  object-cover transform hover:scale-110 transition-all duration-200"
+                    onClick={() => handleShowModalRecipe(String(recipe.idRecipe), recipe.nombre, recipe.descripcion)}
                   />
                 )}
               </div>

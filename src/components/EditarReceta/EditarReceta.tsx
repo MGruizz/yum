@@ -179,6 +179,7 @@ const [pasosEditados, setPasosEditados] = useState < {
       pasosReceta: pasosEditados,
       categoriasReceta: selectedCategories.map((cat) => cat.idTag),
       imagenesReceta: images,
+      idReceta: receta?.idRecipe
     };
 
     const result = await editRecipe(valoresActualizados);
