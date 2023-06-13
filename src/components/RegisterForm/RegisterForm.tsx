@@ -22,12 +22,12 @@ const RegisterForm: React.FC<RegisterFormProps> = () => {
             try {
                 const response = await registerUser(values.username,values.email, values.password);
                 
-                if(response && !(response.Error)){
+                if(response && !(response.data)){
                     toast.success(response.res);
                     navigate('/login');
                 }
                 else{
-                    toast.error(response.Error || 'Error al registrar usuario');    
+                    toast.error(response.data || 'Error al registrar usuario');    
                 }
               } catch (error) {
                 console.error('Error al registrar el usuario:', error);
