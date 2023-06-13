@@ -6,6 +6,7 @@ import { saveToken } from '../../api/authApi';
 import { LoginFormValues } from '../../features/user/userInterfaces';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { toast } from 'react-toastify';
 
 
 function LoginForm() {
@@ -20,9 +21,11 @@ function LoginForm() {
       if (token) {
         saveToken(token);
         setAuthenticated(true);
+        toast.success("¡Bienvenido!");
         navigate('/', { replace: true });
       }
     } catch (error) {
+      toast.error('Usuario o contraseña incorrectos'); 
       throw new Error("Error al iniciar sesión:" + error);
     }
   };

@@ -27,6 +27,7 @@ export const loginUser = async (values: LoginFormValues) => {
 
     return response.data;
   } catch (error) {
+    console.log(error);
     throw new Error('Error al iniciar sesión:' + error);
   }
 };
