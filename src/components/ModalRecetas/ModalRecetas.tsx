@@ -38,6 +38,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import EditarReceta from "../EditarReceta/EditarReceta";
 import { ButtonWithMenuProps } from "../../interfaces/ButtonWithMenuProps/ButtonWithMenuProps";
+import Chip from "@mui/material/Chip";
+import { useLocation } from "react-router-dom";
 
 const ModalRecetas: React.FC<ModalRecetasProps> = ({
   isVisible,
@@ -60,11 +62,29 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   const [categorias, setCategorias] = useState<Tag[] | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-  const [isConfirmationModalVisible, setIsConfirmationModalVisible] =
-    useState(false);
   const [showModal, setShowModal] = useState(false);
 
   //const autor = useState<Boolean>(recipe!.userId == user!.id)
+  const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
+  const [usuarioActual, setUsuarioActual] = useState<User | null>(null);
+  const location = useLocation();
+  const shouldShowButton = location.pathname.startsWith('/profile');
+
+  const fetchUser = async () => {
+    try {
+      const userToken = getUserToken();
+      if (userToken?.id) {
+        const fetchedUser = await getUserById(userToken.id+"");
+        setUsuarioActual(fetchedUser);
+      }
+    } catch (error) {
+      console.error("Error al cargar la información del usuario");
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -226,16 +246,14 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
           className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex justify-center items-center"
         >
           <div className="w-10/12 h-[30rem] sm:w-10/12 md:w-9/12 lg:w-8/12 xl:w-8/12 relative">
-            {
-              /* autor && (*/
+            {usuarioActual && recipe && usuarioActual.id === recipe.userId && shouldShowButton && (
               <button
                 className="bg-blue-500 text-white text-xl font-normal rounded-full px-3 right-10 top-2 absolute"
                 onClick={() => handleButtonClick()}
               >
                 <FontAwesomeIcon icon={faEllipsisVertical} />
               </button>
-              /*)*/
-            }
+            )}
             {isOpen && (
               <div
                 ref={menuRef}

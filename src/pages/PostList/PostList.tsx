@@ -25,24 +25,28 @@ const PostList = () => {
     }
 
     const sortItems = (items: Recipe[]): Recipe[] => {
-        return [...items].sort((a: Recipe, b: Recipe) => {
-            if (sortCriteria === 'likes') {
-                const likesA = Number(a.likes) || 0;
-                const likesB = Number(b.likes) || 0;
-                if (isAscending) {
-                    return likesA - likesB;
+        if (!items) {
+            return [];
+        } else {
+            return [...items].sort((a: Recipe, b: Recipe) => {
+                if (sortCriteria === 'likes') {
+                    const likesA = Number(a.likes) || 0;
+                    const likesB = Number(b.likes) || 0;
+                    if (isAscending) {
+                        return likesA - likesB;
+                    }
+                    return likesB - likesA;
+                } else if (sortCriteria === 'created_at') {
+                    const dateA = a.created_at ? new Date(a.created_at) : new Date();
+                    const dateB = b.created_at ? new Date(b.created_at) : new Date();
+                    if (isAscending) {
+                        return dateA.getTime() - dateB.getTime();
+                    }
+                    return dateB.getTime() - dateA.getTime();
                 }
-                return likesB - likesA;
-            } else if (sortCriteria === 'created_at') {
-                const dateA = a.created_at ? new Date(a.created_at) : new Date();
-                const dateB = b.created_at ? new Date(b.created_at) : new Date();
-                if (isAscending) {
-                    return dateA.getTime() - dateB.getTime();
-                }
-                return dateB.getTime() - dateA.getTime();
-            }
-            return 0;
-        });
+                return 0;
+            });
+        }
     }
 
     const loadMore = () => {
@@ -94,7 +98,7 @@ const PostList = () => {
                 </button>
             </div>
             <div className="max-w-screen-2xl mx-auto">
-                {sortItems(searchResults.slice(0, itemsToShow)).map((receta) => (
+                {sortItems(searchResults).map((receta) => (
                     <div key={receta.id}>
                         <div
                             className="flex items-stretch my-8 mx-auto w-3/4 bg-white shadow-md rounded-md p-0 cursor-pointer overflow-hidden"
@@ -125,7 +129,7 @@ const PostList = () => {
                     />
                 }
             </div>
-            {!isMax && <div className="text-center">Loading...</div>}
+            {!searchResults &&  <div className="text-center text-4xl">No se encontraron coincidencias</div>}
         </Fragment>
     );
 };
