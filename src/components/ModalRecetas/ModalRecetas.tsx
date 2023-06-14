@@ -198,6 +198,7 @@ const ModalRecetas: React.FC<ModalRecetasProps> = ({
   const confirmDelete = async () => {
     await eliminarReceta(recipeId);
     onClose();
+    window.location.reload();
   };
 
   const cancelDelete = () => {
