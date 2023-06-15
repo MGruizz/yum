@@ -7,7 +7,7 @@ import { PopularRecipe } from '../../interfaces/Recipe/Recipe'
 const RecetasPopulares = () => {
     const [recetasPopulares, setRecetasPopulares] = useState<PopularRecipe[]>([]);
     const [showModal, setShowModal] = useState(false);
-    const [receta, setReceta] = useState({ id: '', name: '', description: '' });
+    const [receta, setReceta] = useState({ id: '', name: '', description: '', imagen: ''});
 
     useEffect(() => {
         getPopularRecipes()
@@ -19,12 +19,13 @@ const RecetasPopulares = () => {
             });
     }, []);
 
-    const handleShowModal = (recipeId: string, recipeName: string, recipeDescription: string) => {
+    const handleShowModal = (recipeId: string, recipeName: string, recipeDescription: string, recipeImagen: string) => {
         setShowModal(true)
         setReceta({ 
              id: recipeId,
              name: recipeName,
-             description: recipeDescription
+             description: recipeDescription,
+             imagen: recipeImagen
         });
     }
 
@@ -35,11 +36,11 @@ const RecetasPopulares = () => {
                 <hr className="w-full mt-8 mb-4 border-gray-400" />
                 <div className='flex flex-wrap gap-4 justify-center px-4'>
                     {recetasPopulares.map((recipe, index) => (
-                        <div className="flex-shrink-0" onClick={() => handleShowModal(recipe.id, recipe.nombre, recipe.descripcion)} key={index}>
+                        <div className="flex-shrink-0" onClick={() => handleShowModal(recipe.id, recipe.nombre, recipe.descripcion, recipe.descripcion)} key={index}>
                             <RecipeCard
                                 title={recipe.nombre}
                                 subtitulo={recipe.descripcion}
-                                imageUrl="https://via.placeholder.com/200x270"
+                                imageUrl={recipe.imagen}
                             />
                         </div>
                     ))}

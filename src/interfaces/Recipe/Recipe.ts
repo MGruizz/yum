@@ -15,6 +15,7 @@ export interface PopularRecipe {
     descripcion: string;
     visitas: string;
     likes: string;
+    imagen: string; //url
 }
 
 type PopularRecipes = Recipe[];
