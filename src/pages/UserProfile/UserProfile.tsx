@@ -277,7 +277,7 @@ const UserProfile: React.FC = () => {
                 <h2 className="text-xl font-bold text-gray-800 cursor-pointer" onClick={handleShowFollowed}>
                   Seguidos
                 </h2>
-                <p className="text-gray-600">{infoUsuario?.seguidores.count}</p>
+                <p className="text-gray-600">{infoUsuario?.seguidos.count}</p>
               </div>
             </div>
 
