@@ -3,12 +3,11 @@ import { FooterProps } from '../../interfaces/Footer/FooterProps';
     
 const Footer: React.FC<FooterProps> = () => {
     return (
-        <footer className="bg-yellow-700 text-white py-4">
+        <footer className="bg-gray-500 text-white py-4">
             <div className="container mx-auto flex flex-wrap justify-between items-center">
 
                 {/* Información */}
                 <div className="w-full sm:w-auto mb-4 sm:mb-0"> 
-                    <p className="underline decoration-solid"> About Us</p>
                     <ul>
                         <a href="#" className="hover:text-gray-300">
                             <li>Contacto</li>

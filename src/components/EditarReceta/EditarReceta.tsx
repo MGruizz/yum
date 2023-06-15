@@ -246,7 +246,7 @@ const [pasosEditados, setPasosEditados] = useState < {
                       </div>
                     )}
                   </div>
-                  {/* Ingredientes Receta */}
+                  {/* Ingredientes Receta
                   <div className="mb-4">
                     <label htmlFor="ingredientesReceta" className="block mb-2">
                       Ingredientes:
@@ -292,7 +292,7 @@ const [pasosEditados, setPasosEditados] = useState < {
                       </div>
                     )}
                   </div>
-                  {/* Pasos de la receta */}
+                  
                   <div className="mb-4">
                     <label htmlFor="pasosReceta" className="block mb-2">
                       Pasos:
@@ -340,7 +340,7 @@ const [pasosEditados, setPasosEditados] = useState < {
                       </div>
                     )}
                   </div>
-                  {/* Categorias de la receta */}
+                  
                   <div>
                     <Autocomplete
                       options={Allcategories}
@@ -373,7 +373,7 @@ const [pasosEditados, setPasosEditados] = useState < {
                     </div>
                   </div>
 
-                  {/* Selector de imagenes */}
+                  
                   <div className="my-4" id="selectorImagenes">
                     <label className="customFileUpload">
                       Seleccionar imágenes
@@ -405,7 +405,7 @@ const [pasosEditados, setPasosEditados] = useState < {
                       ))}
                     </div>
                   </div>
-
+                    */}
                   <div className="mb-4">
                     <button
                       type="submit"
@@ -413,7 +413,7 @@ const [pasosEditados, setPasosEditados] = useState < {
                     >
                       Enviar
                     </button>
-                  </div>
+                  </div> 
                 </form>
               </div>
               {/* </div> */}
