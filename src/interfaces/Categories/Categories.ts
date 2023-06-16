@@ -6,4 +6,5 @@ export interface Categories {
 export interface PopularCategories {
     id: string;
     nombre: string;
+    imagen: string;
 }

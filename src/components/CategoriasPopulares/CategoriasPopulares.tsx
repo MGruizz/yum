@@ -35,7 +35,7 @@ const CategoriasPopulares = () => {
                     <div className="flex-shrink-0" key={index} onClick={() => searchByCategoryName(categoria.nombre)}>
                         <CategoryCard
                             title={categoria.nombre}
-                            imageUrl='https://via.placeholder.com/200x270'
+                            imageUrl={categoria.imagen}
                         />
                     </div>
                 ))}
