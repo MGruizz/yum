@@ -4,8 +4,7 @@ export interface Recipe {
     descripcion: string;
     visitas: string;
     likes: string;
-    imageUrl: string;
-    imagen?:string;
+    imagenes: string[];
     created_at?:string;
 }
 
